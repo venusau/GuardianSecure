@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Guardian Secure{% endblock %}
+{%block profilehome%}{%endblock%}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="container">
+            <div class="content-inner">
+                <h1>Welcome to Guardian Secure</h1>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus tempora sed repellendus minima eum? Tenetur dolorum velit vero harum. Natus, eveniet totam sapiente nihil neque maiores quo doloremque possimus praesentium commodi culpa excepturi ipsum.</p>
+
+                <div class="features-container-dynamic">
+                    <div class="feature-dynamic">
+                        <span id="weWillProvide">We will provide - </span>
+                        <span class="feature-text"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="features-container">
+        <!-- Feature 1: Password Strength Testing -->
+        <div class="feature">
+            <h2>Password Strength Testing</h2>
+            <p>Test the strength of your passwords to ensure they meet security standards. Protect your accounts with robust and secure passwords.</p>
+        </div>
+
+        <!-- Feature 2: Plain text to Cipher text -->
+        <div class="feature">
+            <h2>Plain text to Cipher text</h2>
+            <p>Convert plain text into encrypted cipher text for secure communication. Safeguard your sensitive information with advanced encryption.</p>
+        </div>
+
+        <!-- Feature 3: Vulnerability Matcher tool -->
+        <div class="feature">
+            <h2>Vulnerability Matcher tool</h2>
+            <p>Identify and match vulnerabilities using OWASP's top 10 vulnerabilities list. Stay informed about potential security risks and take proactive measures.</p>
+        </div>
+
+        <!-- Feature 4: AI Chatbot -->
+        <div class="feature">
+            <h2>AI Chatbot</h2>
+            <p>Engage with our AI-powered chatbot to get assistance and support. Get quick answers to your security-related queries and receive guidance on best practices.</p>
+        </div>
+    </div>
+
+    <!-- Embedding index-specific JavaScript -->
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
+{% endblock %}

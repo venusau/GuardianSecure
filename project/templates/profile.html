@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Profile - Guardian Secure{% endblock %}
+
+{%block home%}
+{%endblock%}
+
+{%block signuplogin%}
+<div class="account-dropdown-content" id="accountDropdown">
+    <a href="/"><button>Logout</button></a>
+</div>
+{%endblock%}
+
+
+{% block content %}
+<div class="content">
+    <div class="content-inner">
+        <h1>Welcome to your Profile</h1>
+        <p>This is your profile page. You can interact with the chatbot here:</p>
+        <form action="{{ url_for('tools.ai_chatbot') }}" method="post">
+            <label for="message"> Message</label>
+            <input type="message" id="message" name="message">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
