@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Profile - Guardian Secure{% endblock %}
+
+{%block home%}
+{%endblock%}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+{% endblock %}
+
+{%block signuplogin%}
+<div class="account-dropdown-content" id="accountDropdown">
+    <a href="/logout"><button>Logout</button></a>
+</div>
+{%endblock%}
+
+
+{% block content %}
+
+<h2>Welcome, {{ username }}</h2>
+
+<!-- Tool Section -->
+<div class="tool-section">
+    <div class="tool-container">
+        <div class="tool" id="passwordStrength">
+            <a href="/password_strength"> <img src="/src/password.jpg" alt="Password Strength Testing">
+                <h3>Password Strength Testing</h3>
+                <p>Test the strength of your passwords.</p>
+            </a>
+        </div>
+        <div class="tool" id="cipherText">
+            <a href="/cipher_conversion">
+                <img src="/src/stock-photo-encrypted-word-showing-forbidden-cipher-and-security-293421848.jpg"
+                    alt="Plain Text to Cipher Text">
+                <h3>Plain Text to Cipher Text</h3>
+                <p>Convert plain text to cipher text securely.</p>
+            </a>
+        </div>
+        <div class="tool" id="vulnerabilityMatcher">
+            <a href="/vulnerability_matcher">
+                <img src="/src/1000_F_201211820_Yf9jBT8yaLyYuOrHOItHHHinf07hYZzw.jpg"
+                    alt="Vulnerability Matcher Tool">
+                <h3>Vulnerability Matcher Tool</h3>
+                <p>Check your system for vulnerabilities.</p>
+            </a>
+        </div>
+        <div class="tool" id="aiChatbot">
+            <a href="/ai_chatbot">
+                <img src="/src/cute-bot-say-users-hello-chatbot-greets-online-consultation_80328-195.avif"
+                    alt="AI Chatbot">
+                <h3>AI Chatbot</h3>
+                <p>Chat with our AI assistant for help.</p>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}AI Chatbot - Guardian Secure{% endblock %}
+
+{% block home %}{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+{% endblock %}
+
+{% block signuplogin %}
+<div class="account-dropdown-content" id="accountDropdown">
+    <a href="/logout"><button>Logout</button></a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="content-inner">
+        <h1>Welcome to our chatbot</h1>
+        <p>This is your profile chatbot page. You can interact with the chatbot here:</p>
+        <p><strong>You:</strong> {{ user_input }}</p>
+        <p><strong>Chatbot:</strong> {{ bot_response }}</p>
+        <form action="{{ url_for('tools.ai_chatbot') }}" method="post">
+            <textarea name="message" rows="4" cols="50" placeholder="Type your message to the chatbot"></textarea><br>
+            <button type="submit">Send</button>
+        </form>
+        <div class="chat-history">
+            <!-- Display chat history here -->
+        </div>
+    </div>
+</div>
+{% endblock %}

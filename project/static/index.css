@@ -1,0 +1,167 @@
+.left-image,
+        .right-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .left-image img,
+        .right-image img {
+            max-width: 50%;
+            height: auto;
+        }
+
+        .content {
+            background-color: #9cd599;
+            display: flex;
+            margin-top: auto;
+
+        }
+
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            flex: 2;
+            /* Take up more space */
+        }
+
+        .content-inner {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+
+        /* Updated CSS */
+
+
+
+        /* .container {
+            max-width: 800px;
+            margin: 2px 2px
+        }*/
+
+
+
+        .features-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 10px 10px;
+
+        }
+
+        .feature {
+            background-color: #a2d59f;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(4, 208, 14, 0.1);
+            transition: transform 0.3s ease;
+            animation: fadeInUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        .feature:hover {
+            /* transform: scale(1.05); */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .feature h2 {
+            color: #000000;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .features-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        .features-container-dynamic {
+            margin: 50px auto;
+            max-width: 800px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+
+        }
+
+        .feature-text {
+            color: rgb(1, 1, 19);
+            font-weight: bolder;
+
+        }
+
+
+        .feature-dynamic {
+            font-weight: bold;
+            color: #000000;
+            font-size: 24px;
+            margin: 0 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            position: relative;
+            animation: typeWriter 2s steps(40, end), blinkCursor 0.5s steps(40, end) infinite;
+        }
+
+        .feature-dynamic::after {
+            content: '|';
+            position: absolute;
+            right: 0;
+            animation: blinkCursor 0.5s steps(40, end) infinite;
+        }
+
+        /* CSS for login notice */
+
+        .login-notice {
+            border: 2px solid red;
+
+            color: #fff;
+            background-color: #ebff51;
+            padding: 10px;
+            text-align: center;
+            animation: colorChange 2s linear infinite;
+            font-weight: bold;
+            border-radius: 33px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            margin: 0;
+        }
+
+        @keyframes colorChange {
+            0% {
+                color: rgb(255, 0, 0);
+            }
+
+            50% {
+                color: rgb(0, 0, 0);
+            }
+
+            100% {
+                color: rgb(254, 0, 241);
+            }
+        }
