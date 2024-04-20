@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 import os 
 from flask_login import LoginManager
+from dotenv import load_dotenv
+load_dotenv()
 mail=Mail()
 db = SQLAlchemy()
 import sys
@@ -14,16 +16,15 @@ def create_app():
     app=Flask(__name__)
     
     app.config['SECRET_KEY']='secret_key'
-    app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:vicky2003@localhost/GuardianSecure'
+    app.config['SQLALCHEMY_DATABASE_URI']=os.environ.get("DATABASE_URI")
 
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 465
-    app.config['MAIL_USERNAME'] = 'guardainsecurefoundation@gmail.com'
-    app.config['MAIL_PASSWORD'] = 'kkhwblkaellpcleg'
-    app.config['MAIL_DEFAULT_SENDER'] = 'guardainsecurefoundation@gmail.com'
+    app.config['MAIL_USERNAME'] = os.environ.get("EMAIL")
+    app.config['MAIL_PASSWORD'] = os.environ.get("EMAIL_PASSWORD")
+    app.config['MAIL_DEFAULT_SENDER'] = os.environ.get("DEFAULT_SENDER")
     app.config['MAIL_USE_TLS'] = False
     app.config['MAIL_USE_SSL'] = True
-    # kkhw blka ellp cleg
     login_manager=LoginManager()
     login_manager.login_view= 'auth.login'
     login_manager.init_app(app)

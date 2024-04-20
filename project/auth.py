@@ -65,7 +65,7 @@ def reset_password():
             flash('Email not found.', 'error')
             return redirect(url_for('auth.signup'))
 
-        if user.security_question != security_question and user.security_answer != security_answer:
+        if user.security_question != security_question or user.security_answer != security_answer:
             flash('Wrong security question or answer.', 'error')
             problem='Wrong security question or answer.'
             session['problem'] = problem
