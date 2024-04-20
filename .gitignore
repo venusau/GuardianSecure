@@ -7,4 +7,4 @@
 # Ignore the myenv directory
 myenv/
 
-email_pass.txt
+*.txt
