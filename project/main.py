@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, url_for ,request,redirect
-from flask_login import login_required, current_user
+from flask_login import login_required, current_user, logout_user
 main=Blueprint('main', __name__)
 
 @main.route('/')
 def index():
+    logout_user()
     return render_template('index.html')
 
 @main.route('/profile', methods=['GET'])

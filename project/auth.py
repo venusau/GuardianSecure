@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for,flash,session
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import User
-from . import db
+from . import db,mail
 import random
-from flask_mail import Message,Mail
+from flask_mail import Message
 from flask_login import login_user,logout_user,login_required
 
 auth = Blueprint('auth', __name__)
@@ -67,6 +67,8 @@ def reset_password():
 
         if user.security_question != security_question and user.security_answer != security_answer:
             flash('Wrong security question or answer.', 'error')
+            problem='Wrong security question or answer.'
+            session['problem'] = problem
             return redirect(url_for('auth.wrong_credentials'))
 
         if new_password != confirm_new_password:
@@ -74,16 +76,16 @@ def reset_password():
             return redirect(url_for('auth.wrong_credentials'))
         
         random_number = random.randint(100000, 999999)
-        msg = Message(f"Your OTP : {random_number}",recipients=[email])
-        # Send email with OTP
-        # mail.send(msg)
+        msg = Message("Subject", recipients=[email])
+        msg.body = f"Your OTP is {random_number}"  # Use f-string to insert the OTP
+        mail.send(msg)
         # Storing values in session
         session['email'] = email
         session['random_number'] = random_number
         session['confirm_new_password'] = confirm_new_password
 
         # Redirect to the page where the user will enter OTP
-        return redirect(url_for('auth.reset_password_code',random_number=random_number))
+        return redirect(url_for('auth.reset_password_code'))
     
     return render_template('index.html')
 
@@ -96,22 +98,27 @@ def reset_password_code():
         confirm_new_password = session.get('confirm_new_password')
 
         user_random_otp = request.form.get("otp")
-
+        print(confirm_new_password)
+        print(type(confirm_new_password))
         user = User.query.filter_by(email=email).first()
-        print(user.email)
-        print(type(random_number))
-        print(type(user_random_otp))
+       
         if user and user_random_otp == str(random_number):
-            user.password = generate_password_hash(confirm_new_password)
+            hashed_password = generate_password_hash(confirm_new_password)
+            user.password=hashed_password
+            db.session.commit()#this was the problem 
             return redirect(url_for('main.index'))
         else:
+            problem="User doesn't exist or wrong otp "
+            session['problem'] = problem
             return redirect(url_for('auth.wrong_credentials'))
 
     return render_template('reset_password_code.html')
 
 @auth.route('/wrong_credentials')
 def wrong_credentials():
-    return render_template('wrong_credentials.html')
+    problem = session.get('problem')
+    print(problem)
+    return render_template('wrong_credentials.html',problem=problem)
 
 @auth.route('/logout')
 @login_required

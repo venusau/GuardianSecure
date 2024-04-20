@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify,flash
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify,flash,current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, current_user
 import os 
@@ -6,6 +6,12 @@ import hashlib
 import re
 import random
 import string
+from . import mail
+from flask_mail import Message
+import time
+from zapv2 import ZAPv2
+import requests
+import json
 
 
 tools=Blueprint('tools', __name__)
@@ -65,10 +71,66 @@ def md5_hash(text):
     return hashlib.md5(text.encode()).hexdigest()
 
 
-@tools.route('/vulnerability_matcher', methods=['GET'])
+@tools.route('/vulnerability_matcher', methods=['GET', 'POST'])
 @login_required
 def vulnerability_matcher():
-    # Handle the vulnerability matcher route logic here
+    if request.method == 'POST':
+        target = request.form.get('targetURL')  # Corrected variable name
+        apiKey = 'enkbt3g4bubcf87sl3ir8dd6io'# TODO: THIS HAS TO BE CHANGEDCHANGED
+        zap = ZAPv2(apikey=apiKey)
+
+        print('Spidering target {}'.format(target))
+        scanID = zap.spider.scan(target)
+        while int(zap.spider.status(scanID)) < 100:
+            print('Spider progress %: {}'.format(zap.spider.status(scanID)))
+            time.sleep(1)
+        print('Spider has completed!')
+
+        print("Enter 1 for Passive scan and 2 for Active scan \n")
+
+        print("Warning: Active Scan takes much more time, Don't interrupt, it may affect the report")
+
+        k = input("Enter the choice:")
+        if int(k) == 2:  # Converted k to int
+            print(f'Active Scanning target {target}')
+            scanID = zap.ascan.scan(url=target)
+            while int(zap.ascan.status(scanID)) < 100:
+                print('Scan progress %: {}'.format(zap.ascan.status(scanID)))
+                time.sleep(5)
+        elif int(k) == 1:  # Converted k to int
+            while int(zap.pscan.records_to_scan) > 0:  # Corrected function call
+                print('Records to passive scan : ' + zap.pscan.records_to_scan())
+                time.sleep(2)
+
+        print('Passive Scan completed')
+
+        print('Hosts: {}'.format(', '.join(zap.core.hosts)))
+        print('Alerts: ')
+        print(zap.core.alerts())
+
+        # Get JSON Report
+        headers = {
+            'Accept': 'application/json',
+            'X-ZAP-API-Key': apiKey
+        }
+
+        generateFile = requests.get('http://localhost:8080/JSON/reports/action/generate/', params={
+            'title': 'Report',
+            'template': 'traditional-pdf',
+            'sites': target,
+            'reportFileName': 'Report',
+            'reportDir': 'C:/Users/BINITA/OneDrive/Desktop/WebAromorX/Code'# TODO: THIS HAS TO BE CHANGED 
+        }, headers=headers)
+        
+        # Assuming the report is saved as "Report.pdf"
+        # Attach the report to the email
+        if generateFile.status_code == 200:
+            msg = Message('Your report of the vulnerability scan is attached', recipients=['vickybhattacharya19@gmail.com'])
+            msg.body = 'Please find the attached report.'
+            with open("C:/Users/BINITA/OneDrive/Desktop/WebAromorX/Code/Report.pdf", "rb") as fp: #TODO : HAS TO BE CORRECTED 
+                msg.attach("Report.pdf", "application/pdf", fp.read())
+            mail.send(msg)
+
     return render_template('vulnerability_matcher.html')
 
 
