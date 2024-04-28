@@ -2,7 +2,6 @@
 .tool-section {
     /* Styles for the tool section */
     padding: 20px;
-
 }
 
 .tool-container {
@@ -10,6 +9,11 @@
     flex-direction: column;
     max-width: 1200px;
     margin: 0 auto;
+    
+}
+.tool-container .tool a{
+    color:rgb(8, 83, 1) ;
+    text-decoration: none;
 }
 
 .tool {

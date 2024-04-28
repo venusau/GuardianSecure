@@ -1,37 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Panel</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='admin.css') }}"
+    />
+  </head>
+  <body>
     <h1>User Management</h1>
     <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="userTable">
-            <!-- User data will be inserted here -->
-        </tbody>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="userTable">
+        <!-- User data will be inserted here -->
+      </tbody>
     </table>
     <script>
-        function getUsers() {
-            fetch('/users')
-                .then(response => response.json())
-                .then(data => {
-                    const users = data.users;
-                    const tableBody = document.getElementById('userTable');
-                    tableBody.innerHTML = '';
-                    users.forEach(user => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
+      function getUsers() {
+        fetch("/users")
+          .then((response) => response.json())
+          .then((data) => {
+            const users = data.users;
+            const tableBody = document.getElementById("userTable");
+            tableBody.innerHTML = "";
+            users.forEach((user) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
                             <td>${user.id}</td>
                             <td>${user.name}</td>
                             <td>${user.email}</td>
@@ -40,24 +43,25 @@
                                 <button onclick="deleteUser(${user.id})">Delete</button>
                             </td>
                         `;
-                        tableBody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error('Error:', error));
-        }
+              tableBody.appendChild(row);
+            });
+          })
+          .catch((error) => console.error("Error:", error));
+      }
 
-        function updateUser(userId) {
-            // Implement update functionality using PATCH method
-            console.log('Update user with ID:', userId);
-        }
+      function updateUser(userId) {
+        // Implement update functionality using PATCH method
+        console.log("Update user with ID:", userId);
+      }
 
-        function deleteUser(userId) {
-            // Implement delete functionality using DELETE method
-            console.log('Delete user with ID:', userId);
-        }
+      function deleteUser(userId) {
+        // Implement delete functionality using DELETE method
+        console.log("Delete user with ID:", userId);
+      }
 
-        // Call the function to fetch users when the page loads
-        getUsers();
+      // Call the function to fetch users when the page loads
+      getUsers();
     </script>
-</body>
+
+  </body>
 </html>
