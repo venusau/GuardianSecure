@@ -5,7 +5,7 @@ main=Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    logout_user()
+    # logout_user()
     return render_template('index.html')
 
 @main.route('/profile', methods=['GET'])
