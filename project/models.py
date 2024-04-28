@@ -8,3 +8,15 @@ class User(db.Model, UserMixin):
     password=db.Column(db.String(500))
     security_question=db.Column(db.String(250))
     security_answer=db.Column(db.String(250))
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+             }
+            # 'password': self.password,
+            # 'security_question': self.security_question,
+            # 'security_answer': self.security_answer 
+       
+    

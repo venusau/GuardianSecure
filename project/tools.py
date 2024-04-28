@@ -78,6 +78,7 @@ def vulnerability_matcher():
         target = request.form.get('targetURL')  # Corrected variable name
         apiKey = 'enkbt3g4bubcf87sl3ir8dd6io'# TODO: THIS HAS TO BE CHANGEDCHANGED
         zap = ZAPv2(apikey=apiKey)
+        k = 2 if request.form.get('options') == "Active Scan" else 1
 
         print('Spidering target {}'.format(target))
         scanID = zap.spider.scan(target)
@@ -90,7 +91,7 @@ def vulnerability_matcher():
 
         print("Warning: Active Scan takes much more time, Don't interrupt, it may affect the report")
 
-        k = input("Enter the choice:")
+        
         if int(k) == 2:  # Converted k to int
             print(f'Active Scanning target {target}')
             scanID = zap.ascan.scan(url=target)

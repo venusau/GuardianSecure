@@ -8,12 +8,19 @@ load_dotenv()
 mail=Mail()
 db = SQLAlchemy()
 import sys
-print(sys.executable)
+from flask_cors import CORS
 
+
+
+# print(os.environ.get("DATABASE_URI"))
+
+# print(sys.executable)
+
+app=Flask(__name__)
+CORS(app)
 
 def create_app():
     
-    app=Flask(__name__)
     
     app.config['SECRET_KEY']='secret_key'
     app.config['SQLALCHEMY_DATABASE_URI']=os.environ.get("DATABASE_URI")
@@ -38,6 +45,9 @@ def create_app():
     db.init_app(app)
     mail.init_app(app)
 
+    from .crud_user import crud_user as crud_user_blueprint
+    app.register_blueprint(crud_user_blueprint)
+
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
@@ -46,4 +56,9 @@ def create_app():
     
     from .tools import tools as tools_blueprint
     app.register_blueprint(tools_blueprint)
+    
+
+    
+    
+    
     return app

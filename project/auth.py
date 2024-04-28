@@ -4,7 +4,7 @@ from .models import User
 from . import db,mail
 import random
 from flask_mail import Message
-from flask_login import login_user,logout_user,login_required
+from flask_login import login_user,logout_user,login_required, current_user
 
 auth = Blueprint('auth', __name__)
 
@@ -45,9 +45,21 @@ def login():
         
         if user and check_password_hash(user.password, password):
             login_user(user, remember=remember)
+            useradmin = User.query.filter_by(email="admin@gmail.com").first()
+            
+            if current_user.name=='Admin' and current_user.password==useradmin.password:
+                
+                return redirect(url_for('main.admin'))
+            
             return redirect(url_for('main.profile'))
+        elif not user:
+            problem='User doesnot exist.'
+            session['problem'] = problem
+            return redirect(url_for('auth.wrong_credentials'))
         else:
-            return redirect(url_for('auth.login'))
+            problem='Wrong Password.'
+            session['problem'] = problem
+            return redirect(url_for('auth.wrong_credentials'))
     return redirect(url_for('main.index'))
 
 
