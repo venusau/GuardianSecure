@@ -24,44 +24,22 @@
         <!-- User data will be inserted here -->
       </tbody>
     </table>
-    <script>
-      function getUsers() {
-        fetch("/users")
-          .then((response) => response.json())
-          .then((data) => {
-            const users = data.users;
-            const tableBody = document.getElementById("userTable");
-            tableBody.innerHTML = "";
-            users.forEach((user) => {
-              const row = document.createElement("tr");
-              row.innerHTML = `
-                            <td>${user.id}</td>
-                            <td>${user.name}</td>
-                            <td>${user.email}</td>
-                            <td>
-                                <button onclick="updateUser(${user.id})">Update</button>
-                                <button onclick="deleteUser(${user.id})">Delete</button>
-                            </td>
-                        `;
-              tableBody.appendChild(row);
-            });
-          })
-          .catch((error) => console.error("Error:", error));
-      }
+    <!-- Modal overlay -->
+    <div class="overlay" id="overlay"></div>
 
-      function updateUser(userId) {
-        // Implement update functionality using PATCH method
-        console.log("Update user with ID:", userId);
-      }
+    <!-- Modal -->
+    <div class="modal" id="modal">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h2>Update User</h2>
+      <form id="updateUserForm">
+        <label for="updateUserName">Name:</label>
+        <input type="text" id="updateUserName" name="name" required />
+        <label for="updateUserEmail">Email:</label>
+        <input type="email" id="updateUserEmail" name="email" required />
+        <button type="submit">Update</button>
+      </form>
+    </div>
 
-      function deleteUser(userId) {
-        // Implement delete functionality using DELETE method
-        console.log("Delete user with ID:", userId);
-      }
-
-      // Call the function to fetch users when the page loads
-      getUsers();
-    </script>
-
+    <script src="{{ url_for('static', filename='admin.js') }}"></script>
   </body>
 </html>
