@@ -3,6 +3,7 @@ function getUsers() {
       .then((response) => response.json())
       .then((data) => {
         const users = data.users;
+        console.log(data)
         const tableBody = document.getElementById("userTable");
         tableBody.innerHTML = "";
         users.forEach((user) => {
@@ -19,7 +20,7 @@ function getUsers() {
           tableBody.appendChild(row);
         });
       })
-      .catch((error) => console.error("Error:", error));
+      .catch((error) => alert("Error:", error));
   }
   
   function openModal() {
@@ -33,7 +34,6 @@ function closeModal() {
 }
 
 function updateUser(userId) {
-    // Open modal
     openModal();
 
     // Function to handle form submission when updating user
@@ -58,10 +58,15 @@ function updateUser(userId) {
                 closeModal();
                 getUsers();
             } else {
-                console.error("Failed to update user");
+                if (response.status===401){
+                    alert("You can not update this user");
+                }
+                else{
+                    alert("Failed to update user");
+                }
             }
         } catch (error) {
-            console.error("Error:", error);
+            alert("Error:", error);
         }
     });
 }
@@ -77,10 +82,16 @@ async function deleteUser(userId) {
             // Refresh the user list after deleting
             getUsers();
         } else {
-            console.error("Failed to delete user");
+            if (response.status===401){
+                alert("You can not delete this user");
+                getUsers();
+            }
+            else{
+                alert("Failed to delete user");
+            }
         }
     } catch (error) {
-        console.error("Error:", error);
+        alert("Error:", error);
     }
 }
 

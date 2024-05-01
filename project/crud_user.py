@@ -10,7 +10,7 @@ crud_user=Blueprint("crud_user", __name__)
 @login_required
 def get_user():
     user = User.query.filter_by(email="admin@gmail.com").first()
-    if current_user.name=='Admin' and current_user.password==user.password:
+    if current_user.name==user.name and current_user.password==user.password:
         users = User.query.all()
         json_users=list(map(lambda x: x.to_json(), users))
         return jsonify({"users":json_users}), 200,
@@ -19,11 +19,13 @@ def get_user():
 @app.route('/update_user/<int:user_id>', methods=["PATCH"])
 @login_required
 def update_user(user_id):
-    user = User.query.filter_by(email="admin@gmail.com").first()
-    if current_user.name=='Admin' and current_user.password==user.password:
+    userAdmin = User.query.filter_by(email="admin@gmail.com").first()
+    if current_user.name==userAdmin.name and current_user.password==userAdmin.password:
         user = User.query.get(user_id)
         if not user:
             return jsonify({"message":"User not found."}), 404
+        elif user.name==userAdmin.name and user.email==userAdmin.email:
+            return jsonify({"message":"You can't update the admin account."}), 401,
         
 
         data=request.json
@@ -41,11 +43,13 @@ def update_user(user_id):
 
 @app.route('/delete_user/<int:user_id>', methods=["DELETE"])
 def delete_user(user_id):
-    user = User.query.filter_by(email="admin@gmail.com").first()
-    if current_user.name=='Admin' and current_user.password==user.password:
+    userAdmin = User.query.filter_by(email="admin@gmail.com").first()
+    if current_user.name==userAdmin.name and current_user.password==userAdmin.password:
         user = User.query.get(user_id)
         if not user:
             return jsonify({"message":"User not found."}), 404
+        elif user.name==userAdmin.name and user.email==userAdmin.email:
+            return jsonify({"message":"You can't delete the admin account."}), 401,
         try:
             db.session.delete(user)
             db.session.commit()

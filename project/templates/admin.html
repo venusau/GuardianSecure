@@ -10,6 +10,10 @@
     />
   </head>
   <body>
+    <nav class="adminNavbar">
+      <a href="{{url_for('main.profile')}}">Profile</a>
+      <a href="{{url_for('auth.logout')}}">Logout</a>
+    </nav>
     <h1>User Management</h1>
     <table class="table">
       <thead>

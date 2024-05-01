@@ -12,7 +12,7 @@ def index():
 @login_required
 def profile():
     # Split the username by space and take the first part as the first name
-    return render_template('profile.html',username=current_user.name)
+    return render_template('profile.html',username=current_user.name, email=current_user.email)
 
 @main.route('/about')
 def about_web_app():

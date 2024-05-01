@@ -12,6 +12,9 @@
 {%block signuplogin%}
 <div class="account-dropdown-content" id="accountDropdown">
     <a href="/logout"><button>Logout</button></a>
+    {% if email == "admin@gmail.com"  %}
+    <a href="/admin"><button>Admin</button></a>
+    {% endif %}
 </div>
 {%endblock%}
 
