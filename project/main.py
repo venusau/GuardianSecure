@@ -22,7 +22,7 @@ def about_web_app():
 @login_required
 def admin():
     user = User.query.filter_by(email="admin@gmail.com").first()
-    if current_user.name=='Admin' and current_user.password==user.password:
+    if current_user.name==user.name and current_user.password==user.password:
         return render_template('admin.html')
     else:
         return redirect(url_for('main.index'))

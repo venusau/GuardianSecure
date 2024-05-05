@@ -92,13 +92,13 @@ def vulnerability_matcher():
         print("Warning: Active Scan takes much more time, Don't interrupt, it may affect the report")
 
         
-        if int(k) == 2:  # Converted k to int
+        if int(k) == 2: 
             print(f'Active Scanning target {target}')
             scanID = zap.ascan.scan(url=target)
             while int(zap.ascan.status(scanID)) < 100:
                 print('Scan progress %: {}'.format(zap.ascan.status(scanID)))
                 time.sleep(5)
-        elif int(k) == 1:  # Converted k to int
+        elif int(k) == 1:
             while int(zap.pscan.records_to_scan) > 0:  # Corrected function call
                 print('Records to passive scan : ' + zap.pscan.records_to_scan())
                 time.sleep(2)
@@ -126,7 +126,7 @@ def vulnerability_matcher():
         # Assuming the report is saved as "Report.pdf"
         # Attach the report to the email
         if generateFile.status_code == 200:
-            msg = Message('Your report of the vulnerability scan is attached', recipients=['vickybhattacharya19@gmail.com'])
+            msg = Message('Your report of the vulnerability scan is attached', recipients=[current_user.email])
             msg.body = 'Please find the attached report.'
             with open("C:/Users/BINITA/OneDrive/Desktop/WebAromorX/Code/Report.pdf", "rb") as fp: #TODO : HAS TO BE CORRECTED 
                 msg.attach("Report.pdf", "application/pdf", fp.read())

@@ -1,3 +1,6 @@
+body{
+    background-color: #000000;
+}
 .left-image,
         .right-image {
             flex: 1;

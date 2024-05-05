@@ -9,7 +9,42 @@ from flask_login import login_user,logout_user,login_required, current_user
 auth = Blueprint('auth', __name__)
 
 
-@auth.route('/signup', methods=['POST'])
+def password_strength(password, username):
+    problems = []
+
+    # Check if password and username are not empty
+    if not password or not username:
+        problems.append("Password and username cannot be empty")
+    
+    # Check if password is at least 8 characters long
+    if len(password) < 8:
+        problems.append("Password must be at least 8 characters long")
+    
+    # Check if password contains at least one uppercase letter
+    if not any(char.isupper() for char in password):
+        problems.append("Password must contain at least one uppercase letter")
+    
+    # Check if password contains at least one lowercase letter
+    if not any(char.islower() for char in password):
+        problems.append("Password must contain at least one lowercase letter")
+    
+    # Check if password contains at least one numeric digit
+    if not any(char.isdigit() for char in password):
+        problems.append("Password must contain at least one numeric digit")
+    
+    # Check if password contains at least one special character
+    special_characters = "!@#$%^&*()-_=+[{]}\|;:'\",<.>/?"
+    if not any(char in special_characters for char in password):
+        problems.append("Password must contain at least one special character")
+
+    # Check if password contains username (case insensitive)
+    if username.lower() in password.lower():
+        problems.append("Password cannot contain your username")
+    
+    # Return True if no problems encountered, else return list of problems
+    return not problems, problems
+
+@auth.route('/signup', methods=['GET','POST'])
 def signup():
     if request.method == 'POST':
         email = request.form.get('signupEmail')
@@ -18,21 +53,28 @@ def signup():
         confirm_password = request.form.get('confirmPassword')
         security_question = request.form.get('securityQuestion')
         security_answer = request.form.get('securityAnswer')
-
+        # if not password==confirm_password:
+        #     problem='Both the password doesnot match '
+        #     session['problem'] = problem
+        #     return redirect(url_for('auth.wrong_credentials'))
+        # if password_strength(password, fullname)==True:
+        #     hashed_password = generate_password_hash(password, method='sha256')
+        valid, problems = password_strength(password, fullname)
+        
         user = User.query.filter_by(email=email).first()
-        if user:
+        if valid:
+            if user:
+                return redirect(url_for('auth.login'))
+
+            hashed_password = generate_password_hash(confirm_password)
+            new_user = User(email=email, name=fullname, password=hashed_password, security_question=security_question, security_answer=security_answer)
+            db.session.add(new_user)
+            db.session.commit()
             return redirect(url_for('auth.login'))
-
-        if password != confirm_password:
-            return redirect(url_for('auth.signup'))
-
-        hashed_password = generate_password_hash(confirm_password)
-        new_user = User(email=email, name=fullname, password=hashed_password, security_question=security_question, security_answer=security_answer)
-        db.session.add(new_user)
-        db.session.commit()
-        return render_template('index.html', show_login=True)
-    
-    return render_template('index.html')
+        else:
+            for i in problems:
+                flash(i)
+    return render_template('signup.html')
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -60,7 +102,7 @@ def login():
             problem='Wrong Password.'
             session['problem'] = problem
             return redirect(url_for('auth.wrong_credentials'))
-    return redirect(url_for('main.index'))
+    return render_template('login.html')
 
 
 @auth.route('/reset_password', methods=['GET', 'POST'])
@@ -85,6 +127,8 @@ def reset_password():
 
         if new_password != confirm_new_password:
             flash('Passwords do not match.', 'error')
+            problem='Passwords do not match.'
+            session['problem'] = problem
             return redirect(url_for('auth.wrong_credentials'))
         
         random_number = random.randint(100000, 999999)
@@ -99,7 +143,7 @@ def reset_password():
         # Redirect to the page where the user will enter OTP
         return redirect(url_for('auth.reset_password_code'))
     
-    return render_template('index.html')
+    return render_template('reset_password.html')
 
 @auth.route('/reset_password_code', methods=['GET', 'POST'])
 def reset_password_code():
