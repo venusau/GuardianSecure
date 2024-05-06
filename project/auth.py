@@ -64,7 +64,8 @@ def signup():
         user = User.query.filter_by(email=email).first()
         if valid:
             if user:
-                return redirect(url_for('auth.login'))
+                flash("User already exist")
+                return redirect(url_for('auth.signup'))
 
             hashed_password = generate_password_hash(confirm_password)
             new_user = User(email=email, name=fullname, password=hashed_password, security_question=security_question, security_answer=security_answer)
@@ -95,13 +96,11 @@ def login():
             
             return redirect(url_for('main.profile'))
         elif not user:
-            problem='User doesnot exist.'
-            session['problem'] = problem
-            return redirect(url_for('auth.wrong_credentials'))
+            flash('User doesnot exist.\nPlease signup first.')
+            return redirect(url_for('auth.login'))
         else:
-            problem='Wrong Password.'
-            session['problem'] = problem
-            return redirect(url_for('auth.wrong_credentials'))
+            flash('Wrong Password.')
+            return redirect(url_for('auth.login'))
     return render_template('login.html')
 
 

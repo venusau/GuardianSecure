@@ -19,7 +19,7 @@
             <div class="dropdown-menu" aria-labelledby="accountDropdown">
                 {% if current_user.is_authenticated %}
                 <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a>
-                {%if current_user.name=='Admin'%}
+                {%if current_user.name=='Admin' and current_user.email=='admin@gmail.com'%}
                 <a class="dropdown-item" href="/admin">Admin</a>
                 {%endif%}
                 {% else %}

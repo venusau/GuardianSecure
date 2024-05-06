@@ -14,9 +14,6 @@ def profile():
     # Split the username by space and take the first part as the first name
     return render_template('profile.html',username=current_user.name, email=current_user.email)
 
-@main.route('/about')
-def about_web_app():
-    return render_template('about.html')
 
 @main.route('/admin')
 @login_required

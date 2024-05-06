@@ -76,7 +76,7 @@ def md5_hash(text):
 def vulnerability_matcher():
     if request.method == 'POST':
         target = request.form.get('targetURL')  # Corrected variable name
-        apiKey = 'enkbt3g4bubcf87sl3ir8dd6io'# TODO: THIS HAS TO BE CHANGEDCHANGED
+        apiKey = 'hlkihkh2t2lp5ifpfvp6jnhpmu'# TODO: THIS HAS TO BE CHANGEDCHANGED
         zap = ZAPv2(apikey=apiKey)
         k = 2 if request.form.get('options') == "Active Scan" else 1
 
@@ -98,10 +98,11 @@ def vulnerability_matcher():
             while int(zap.ascan.status(scanID)) < 100:
                 print('Scan progress %: {}'.format(zap.ascan.status(scanID)))
                 time.sleep(5)
-        elif int(k) == 1:
-            while int(zap.pscan.records_to_scan) > 0:  # Corrected function call
-                print('Records to passive scan : ' + zap.pscan.records_to_scan())
-                time.sleep(2)
+        if int(k) == 1:
+            records_to_scan = zap.pscan.records_to_scan  # Access attribute directly
+            print('Records to passive scan : ' + records_to_scan)
+            time.sleep(2)
+
 
         print('Passive Scan completed')
 
@@ -120,20 +121,19 @@ def vulnerability_matcher():
             'template': 'traditional-pdf',
             'sites': target,
             'reportFileName': 'Report',
-            'reportDir': 'C:/Users/BINITA/OneDrive/Desktop/WebAromorX/Code'# TODO: THIS HAS TO BE CHANGED 
+            'reportDir': 'D:/projects/GuardianSecure/project'# TODO: THIS HAS TO BE CHANGED 
         }, headers=headers)
         
         # Assuming the report is saved as "Report.pdf"
         # Attach the report to the email
         if generateFile.status_code == 200:
-            msg = Message('Your report of the vulnerability scan is attached', recipients=[current_user.email])
+            msg = Message('Your report of the vulnerability scan is attached', recipients=current_user.mail)
             msg.body = 'Please find the attached report.'
-            with open("C:/Users/BINITA/OneDrive/Desktop/WebAromorX/Code/Report.pdf", "rb") as fp: #TODO : HAS TO BE CORRECTED 
+            with open("D:/projects/GuardianSecure/project/Report.pdf", "rb") as fp: #TODO : HAS TO BE CORRECTED 
                 msg.attach("Report.pdf", "application/pdf", fp.read())
             mail.send(msg)
 
     return render_template('vulnerability_matcher.html')
-
 
 @tools.route('/cipher_conversion', methods=['GET', 'POST'])
 @login_required
