@@ -53,12 +53,12 @@ def signup():
         confirm_password = request.form.get('confirmPassword')
         security_question = request.form.get('securityQuestion')
         security_answer = request.form.get('securityAnswer')
-        # if not password==confirm_password:
-        #     problem='Both the password doesnot match '
-        #     session['problem'] = problem
-        #     return redirect(url_for('auth.wrong_credentials'))
-        # if password_strength(password, fullname)==True:
-        #     hashed_password = generate_password_hash(password, method='sha256')
+
+        if not password==confirm_password:
+            problem='Both the password doesnot match '
+            flash(problem)
+            return redirect(url_for('auth.signup'))
+        
         valid, problems = password_strength(password, fullname)
         
         user = User.query.filter_by(email=email).first()
@@ -93,7 +93,7 @@ def login():
             if current_user.name=='Admin' and current_user.password==useradmin.password:
                 
                 return redirect(url_for('main.admin'))
-            
+            flash(f"Welcome, {user.name}")
             return redirect(url_for('main.profile'))
         elif not user:
             flash('User doesnot exist.\nPlease signup first.')
@@ -115,31 +115,34 @@ def reset_password():
 
         user = User.query.filter_by(email=email).first()
         if not user:
-            flash('Email not found.', 'error')
+            flash('Email not found.')
             return redirect(url_for('auth.signup'))
-
-        if user.security_question != security_question or user.security_answer != security_answer:
-            flash('Wrong security question or answer.', 'error')
-            problem='Wrong security question or answer.'
-            session['problem'] = problem
-            return redirect(url_for('auth.wrong_credentials'))
+        print (user.email, user.security_question, user.security_answer)
+        print(security_question, user.security_answer == security_answer )
+        if not  user.security_question == security_question or not user.security_answer == security_answer:
+            flash('Wrong security question or answer. Please enetr correct Security Question and Secuirty Answer')
+            return redirect(url_for('auth.reset_password'))
 
         if new_password != confirm_new_password:
-            flash('Passwords do not match.', 'error')
-            problem='Passwords do not match.'
-            session['problem'] = problem
-            return redirect(url_for('auth.wrong_credentials'))
+            flash('Passwords do not match.')
+            return redirect(url_for('auth.reset_password'))
+        
+        name=user.name
+        valid, problems = password_strength(confirm_new_password, name)
+        if not valid:
+            for i in problems:
+                flash(i)
+            return redirect(url_for('auth.reset_password'))
         
         random_number = random.randint(100000, 999999)
         msg = Message("Subject", recipients=[email])
-        msg.body = f"Your OTP is {random_number}"  # Use f-string to insert the OTP
+        msg.body = f"Your OTP is {random_number}" 
         mail.send(msg)
         # Storing values in session
         session['email'] = email
         session['random_number'] = random_number
         session['confirm_new_password'] = confirm_new_password
 
-        # Redirect to the page where the user will enter OTP
         return redirect(url_for('auth.reset_password_code'))
     
     return render_template('reset_password.html')
@@ -151,21 +154,27 @@ def reset_password_code():
         email = session.get('email')
         random_number = session.get('random_number')
         confirm_new_password = session.get('confirm_new_password')
-
+        
+        
         user_random_otp = request.form.get("otp")
         print(confirm_new_password)
         print(type(confirm_new_password))
+        print()
         user = User.query.filter_by(email=email).first()
-       
+        
         if user and user_random_otp == str(random_number):
             hashed_password = generate_password_hash(confirm_new_password)
             user.password=hashed_password
             db.session.commit()#this was the problem 
-            return redirect(url_for('main.index'))
+            return redirect(url_for('auth.login'))
+        elif not user :
+            problem="User doesn't exist "
+            flash(problem)
+            return redirect(url_for('auth.reset_password'))
         else:
-            problem="User doesn't exist or wrong otp "
-            session['problem'] = problem
-            return redirect(url_for('auth.wrong_credentials'))
+            problem="Wrong OTP"
+            flash(problem)
+            return redirect(url_for('auth.reset_password_code'))
 
     return render_template('reset_password_code.html')
 

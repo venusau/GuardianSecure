@@ -1,62 +1,77 @@
 {% extends "base.html" %}
 {% block title %}Profile - Guardian Secure{% endblock %}
 
-{%block home%}
-{%endblock%}
-
 {% block head %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
 {% endblock %}
 
-{%block signuplogin%}
-<div class="account-dropdown-content" id="accountDropdown">
-    <a href="/logout"><button>Logout</button></a>
-    {% if email == "admin@gmail.com"  %}
-    <a href="/admin"><button>Admin</button></a>
-    {% endif %}
-</div>
-{%endblock%}
-
 
 {% block content %}
-<div class="bg-success-subtle">
-<h2>Welcome, {{ username }}</h2>
+{% with messages = get_flashed_messages() %} {% if messages %}
+    <div class="alert alert-success alert-dismissible fade show container col-md-6 offset-md-3">
+      {% for message in messages %}
+      {{ message }}
+      {% endfor %}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %} {% endwith %}
 
 <!-- Tool Section -->
-<div class="tool-section">
-    <div class="tool-container">
-        <div class="tool" id="passwordStrength">
-            <a href="/password_strength"> <img src="/src/password.jpg" alt="Password Strength Testing">
-                <h3>Password Strength Testing</h3>
-                <p>Test the strength of your passwords.</p>
+<div class="container-fluid mx-auto px-4 py-8 tool-section">
+    <main>
+        <section class="text-center mb-8">
+            <h2 class="text-2xl font-semibold">Profile Page</h2>
+            <p class="text-white">Explore your security services</p>
+        </section>
+        <div class="container">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            <div class="col"> 
+                <button class="tool-card">
+                <a href="/password_strength">
+                <div class="tool-card">
+                    <h3 class="text-xl custom-text-2 fw-bold">Password Strength Testing</h3>
+                    <p class="text-muted">Test the strength of your passwords to ensure they meet security standards.</p>
+                </div>
             </a>
-        </div>
-        <div class="tool" id="cipherText">
-            <a href="/cipher_conversion">
-                <img src="/src/stock-photo-encrypted-word-showing-forbidden-cipher-and-security-293421848.jpg"
-                    alt="Plain Text to Cipher Text">
-                <h3>Plain Text to Cipher Text</h3>
-                <p>Convert plain text to cipher text securely.</p>
-            </a>
-        </div>
-        <div class="tool" id="vulnerabilityMatcher">
-            <a href="/vulnerability_matcher">
-                <img src="/src/1000_F_201211820_Yf9jBT8yaLyYuOrHOItHHHinf07hYZzw.jpg"
-                    alt="Vulnerability Matcher Tool">
-                <h3>Vulnerability Matcher Tool</h3>
-                <p>Check your system for vulnerabilities.</p>
-            </a>
-        </div>
-        <div class="tool" id="aiChatbot">
-            <a href="/ai_chatbot">
-                <img src="/src/cute-bot-say-users-hello-chatbot-greets-online-consultation_80328-195.avif"
-                    alt="AI Chatbot">
-                <h3>AI Chatbot</h3>
-                <p>Chat with our AI assistant for help.</p>
-            </a>
+        </button>
+            </div>
+            <div class="col">
+                <button class="tool-card">
+                    <a href="/cipher_conversion">
+                <div class="tool-card">
+                    <h3 class="text-xl custom-text-2 fw-bold">Plain text to Cipher text</h3>
+                    <p class="text-muted">Convert plain text into encrypted cipher text for secure communication.</p>
+                </div>
+                </a>
+                </button>
+            </div>
+            <div class="col">
+                <button class="tool-card">
+                    <a href="/vulnerability_matcher">
+                <div class="tool-card">
+                    <h3 class="text-xl custom-text-2 fw-bold">Vulnerability Matcher tool</h3>
+                    <p class="text-muted">Identify and match vulnerabilities using OWASP's top 10 vulnerabilities list.</p>
+                </div>
+                </a>
+                </button>
+            </div>
+            <div class="col">
+                <button class="tool-card">
+                    <a href="{{url_for('tools.ai_chatbot')}}">
+                <div class="tool-card">
+                    <h3 class="text-xl custom-text-2 fw-bold">AI Chatbot</h3>
+                    <p class="text-muted">Engage with our AI-powered chatbot to get assistance and support.</p>
+                </div>
+                </a>
+                </button>
+            </div>
         </div>
     </div>
+    </main>
 </div>
 </div>
+
+{%block footer%}
+{%endblock%}
 {% endblock %}

@@ -11,20 +11,17 @@ import sys
 from flask_cors import CORS
 
 
-
-# print(os.environ.get("DATABASE_URI"))
-
-# print(sys.executable)
-
 app=Flask(__name__)
 CORS(app)
 
 def create_app():
     
-    
+    # DATABASE CONFIGURATION 
     app.config['SECRET_KEY']='secret_key'
     app.config['SQLALCHEMY_DATABASE_URI']=os.environ.get("DATABASE_URI")
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+    # MAIL CONFIGURATION
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 465
     app.config['MAIL_USERNAME'] = os.environ.get("EMAIL")
@@ -56,9 +53,5 @@ def create_app():
     
     from .tools import tools as tools_blueprint
     app.register_blueprint(tools_blueprint)
-    
-
-    
-    
     
     return app

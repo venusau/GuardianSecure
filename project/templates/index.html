@@ -4,61 +4,57 @@
 
 {% block head %}
     {{ super() }}
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid bg-success-subtle">
+<div class="container-fluid col-md-12">
     <div class="row">
         <div class="col-lg-12">
             <div class="content-inner">
-                <h1 class="mb-4">Welcome to Guardian Secure</h1>
-                <header class="border border-success bg-success text-light p-4 rounded mb-4">
+                <h1 class="mb-4 text-center custom-font"><strong class="custom-text">G</strong>uardian <strong class="custom-text">S</strong>ecure</h1>
+                <header class=" text-light p-4 rounded mb-4">
                     <div>
-                        <p class="mb-0">Guardian Secure is your trusted companion in the realm of web security.
+                        <p class="custom-font2 h5 text-center">Guardian Secure is your trusted companion in the realm of web security.
                             With our cutting-edge technologies and robust features,
                             we offer comprehensive protection against cyber threats.
                             Whether you're a business owner, developer, or individual user,
                             Guardian Secure ensures the safety and integrity of your online presence.</p>
                     </div>
                 </header>
-                <div class="features-container-dynamic">
-                    <div class="feature-dynamic">
-                        <span id="weWillProvide" class="mb-0">We will provide - </span>
-                        <span class="feature-text"></span>
-                    </div>
-                </div>
+                
             </div>
             {%if not current_user.is_authenticated%}
-            <div class="alert login-notice mt-3 text-center bg-danger-subtle">
+            <div class="me-4 text-end">
                 <p><strong>Notice:</strong> If you want to access these functionalities, you must be logged in.</p>
             </div>
             {%endif%}
-            <div class="features-container">
+            <div class="features-container container col-md-12 ">
                 <!-- Feature 1: Password Strength Testing -->
-                <div class="feature mb-4">
+                <div class="feature card mb-4">
                     <h2 class="mb-3">Password Strength Testing</h2>
                     <p class="mb-0">Test the strength of your passwords to ensure they meet security standards. Protect your
                         accounts with robust and secure passwords.</p>
                 </div>
 
                 <!-- Feature 2: Plain text to Cipher text -->
-                <div class="feature mb-4">
+                <div class="feature card mb-4">
                     <h2 class="mb-3">Plain text to Cipher text</h2>
                     <p class="mb-0">Convert plain text into encrypted cipher text for secure communication. Safeguard your
                         sensitive information with advanced encryption.</p>
                 </div>
-
+            </div>
+                <div class="features-container container col-md-12">
                 <!-- Feature 3: Vulnerability Matcher tool -->
-                <div class="feature mb-4">
+                <div class="feature card mb-4">
                     <h2 class="mb-3">Vulnerability Matcher tool</h2>
                     <p class="mb-0">Identify and match vulnerabilities using OWASP's top 10 vulnerabilities list. Stay informed
                         about potential security risks and take proactive measures.</p>
                 </div>
 
                 <!-- Feature 4: AI Chatbot -->
-                <div class="feature mb-4">
-                    <h2 class="mb-3">AI Chatbot</h2><strong>(Coming Soon...)</strong>
+                <div class="feature card mb-4">
+                    <h2 class="mb-3">AI Chatbot</h2><strong class="coming-soon">(Coming Soon...)</strong>
                     <p class="mb-0">Engage with our AI-powered chatbot to get assistance and support. Get quick answers to your
                         security-related queries and receive guidance on best practices.</p>
                 </div>

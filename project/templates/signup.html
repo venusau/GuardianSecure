@@ -11,14 +11,24 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Audiowide">
+    <style>
+      .custom-font {
+      font-family: "Audiowide", sans-serif;
+    }
+    .custom-text{
+      color: #055c19;
+    }
+    </style>
   </head>
 
   <body>
     {%include 'navbar.html'%}
     <div
-      class="container border border-success rounded pb-2 pt-2 mt-5 mb-3 ms-5 me-1"
+      class="container pb-4 mt-5 col-md-6 offset-md-3"
     >
       <h2 class="mt-5 mb-3">Sign Up</h2>
+      <br>
       {% with messages = get_flashed_messages() %} {% if messages %}
       <ul class="alert alert-danger">
         {% for message in messages %}

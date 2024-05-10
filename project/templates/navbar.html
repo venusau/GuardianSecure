@@ -1,6 +1,27 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">Guardian Secure</a>
+      <div class="navbar-brand me-2">
+        <a href="/">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+          <!-- Background -->
+          <circle cx="60" cy="60" r="50" fill="#343a40"/>
+          
+          <!-- Globe -->
+          <circle cx="60" cy="60" r="35" fill="#3e8ef7"/>
+          
+          <!-- Shield -->
+          <path d="M60,15 L15,60 L60,90 L105,60 Z" fill="#ffd700"/>
+          
+          <!-- Letter G -->
+          <text x="40" y="80" fill="#343a40" font-family="Arial" font-size="30" font-weight="bold" text-anchor="middle">G</text>
+          
+          <!-- Letter S -->
+          <text x="80" y="80" fill="#343a40" font-family="Arial" font-size="30" font-weight="bold" text-anchor="middle">S</text>
+        </svg>
+      </a>
+      </div>
+      
+      <!-- <a class="navbar-brand custom-font" href="/"><strong class="custom-text">G</strong>uardian <strong class="custom-text">S</strong>ecure</a> -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -13,10 +34,10 @@
             <a class="nav-link" href="/profile">Profile</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Account
             </a>
-            <div class="dropdown-menu" aria-labelledby="accountDropdown">
+            <div class="dropdown-menu custom-bg" aria-labelledby="accountDropdown">
                 {% if current_user.is_authenticated %}
                 <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a>
                 {%if current_user.name=='Admin' and current_user.email=='admin@gmail.com'%}
