@@ -15,8 +15,6 @@ class User(db.Model, UserMixin):
             'name': self.name,
             'email': self.email,
              }
-            # 'password': self.password,
-            # 'security_question': self.security_question,
-            # 'security_answer': self.security_answer 
+           
        
     

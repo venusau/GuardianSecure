@@ -97,9 +97,9 @@ def login():
             return redirect(url_for('main.profile'))
         elif not user:
             flash('User doesnot exist.\nPlease signup first.')
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('auth.signup'))
         else:
-            flash('Wrong Password.')
+            flash('Wrong Password. You may change the change in the forget password section!')
             return redirect(url_for('auth.login'))
     return render_template('login.html')
 

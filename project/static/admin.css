@@ -20,26 +20,25 @@ nav {
 
 .adminNavbar {
   display: flex;
-  justify-content: flex-end; /* Align items to the right */
-  align-items: center; /* Vertically center items */
-  /* height: 100%; Ensure the navbar fills the height of the parent */
+  justify-content: flex-end; 
+  align-items: center;
+ 
 }
 
 .adminNavbar a {
-  color: #ecf0f1; /* Light text color */
-  /* background-color: #3498db; Blue background */
-  /* height: 100%; Fill the height of the navbar */
+  color: #ecf0f1;
+ 
   padding: 0 20px; /* Add padding for better spacing */
-  display: flex; /* Allow for vertical alignment of text */
-  align-items: center; /* Vertically center text */
-  text-decoration: none; /* Remove underline */
-  transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+  display: flex;
+  align-items: center; 
+  text-decoration: none; 
+  transition: background-color 0.3s, color 0.3s;
   border-radius: 36px;
 }
 
 .adminNavbar a:hover {
-  color: #2c3e50; /* Dark text color on hover */
-  background-color: #ecf0f1; /* Light background on hover */
+  color: #2c3e50; 
+  background-color: #ecf0f1;
 }
 
 /* Styling the table */

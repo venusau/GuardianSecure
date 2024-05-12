@@ -24,6 +24,7 @@
 .tool-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 0 20px rgba(234, 234, 234, 1);
+    background-color: rgb(236, 236, 236);
 }
  .custom-text-2{
     color:#6b3b3b;
