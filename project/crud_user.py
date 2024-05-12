@@ -2,14 +2,17 @@ from . import app, db
 from flask import Flask, jsonify, request, Blueprint
 from werkzeug.security import generate_password_hash
 from .models import User
+import os 
 from flask_login import current_user, login_required
+from dotenv import load_dotenv
+load_dotenv()
 
 crud_user=Blueprint("crud_user", __name__)
 
 @app.route('/users', methods=["GET"])
 @login_required
 def get_user():
-    user = User.query.filter_by(email="admin@gmail.com").first()
+    user = User.query.filter_by(email=os.environ.get("ADMIN_EMAIL")).first()
     if current_user.name==user.name and current_user.password==user.password:
         users = User.query.all()
         json_users=list(map(lambda x: x.to_json(), users))
@@ -19,7 +22,7 @@ def get_user():
 @app.route('/update_user/<int:user_id>', methods=["PATCH"])
 @login_required
 def update_user(user_id):
-    userAdmin = User.query.filter_by(email="admin@gmail.com").first()
+    userAdmin = User.query.filter_by(email=os.environ.get("ADMIN_EMAIL")).first()
     if current_user.name==userAdmin.name and current_user.password==userAdmin.password:
         user = User.query.get(user_id)
         if not user:
@@ -43,7 +46,7 @@ def update_user(user_id):
 
 @app.route('/delete_user/<int:user_id>', methods=["DELETE"])
 def delete_user(user_id):
-    userAdmin = User.query.filter_by(email="admin@gmail.com").first()
+    userAdmin = User.query.filter_by(email=os.environ.get("ADMIN_EMAIL")).first()
     if current_user.name==userAdmin.name and current_user.password==userAdmin.password:
         user = User.query.get(user_id)
         if not user:

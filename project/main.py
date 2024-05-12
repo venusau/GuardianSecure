@@ -1,6 +1,10 @@
 from flask import Blueprint, render_template, url_for ,request,redirect
 from flask_login import login_required, current_user, logout_user
 from .models import User
+import os 
+from dotenv import load_dotenv
+load_dotenv()
+
 main=Blueprint('main', __name__)
 
 @main.route('/')
@@ -18,7 +22,7 @@ def profile():
 @main.route('/admin')
 @login_required
 def admin():
-    user = User.query.filter_by(email="admin@gmail.com").first()
+    user = User.query.filter_by(email=os.environ.get("ADMIN_EMAIL")).first()
     if current_user.name==user.name and current_user.password==user.password:
         return render_template('admin.html')
     else:
