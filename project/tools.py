@@ -6,6 +6,7 @@ import hashlib
 import re
 import random
 import string
+from dotenv import load_dotenv
 from . import mail
 from flask_mail import Message
 import time
@@ -13,7 +14,7 @@ from zapv2 import ZAPv2
 import requests
 import json
 
-
+load_dotenv()
 tools=Blueprint('tools', __name__)
 
 
@@ -76,7 +77,7 @@ def md5_hash(text):
 def vulnerability_matcher():
     if request.method == 'POST':
         target = request.form.get('targetURL')  # Corrected variable name
-        apiKey = 'nd6goh9h53ise09q81i3nl2r32'# TODO: THIS HAS TO BE CHANGEDCHANGED
+        apiKey = os.environ.get("ZAP_API_KEY")# TODO: THIS HAS TO BE CHANGEDCHANGED
         k = 2 if request.form.get('options') == "Active Scan" else 1
 
         
