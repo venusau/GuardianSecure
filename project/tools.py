@@ -155,6 +155,7 @@ def vulnerability_matcher():
             with open("D:/GuardianSecure/project/Report.pdf", "rb") as fp: #TODO : HAS TO BE CORRECTED 
                 msg.attach("Report.pdf", "application/pdf", fp.read())
             mail.send(msg)
+            flash("Your report has been sent to your email. Please check your mail for the report")
 
     return render_template('vulnerability_matcher.html')
 

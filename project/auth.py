@@ -47,7 +47,7 @@ def password_strength(password, username):
 @auth.route('/signup', methods=['GET','POST'])
 def signup():
     if request.method == 'POST':
-        email = request.form.get('signupEmail')
+        email = request.form.getlist('signupEmail')
         fullname = request.form.get('signupName')
         password = request.form.get('signupPassword')
         confirm_password = request.form.get('confirmPassword')
