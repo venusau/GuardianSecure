@@ -46,6 +46,7 @@ def password_strength(password, username):
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
+    
     if request.method == 'POST':
         email = request.form.get('signupEmail')  # Assuming only one email address is submitted
         fullname = request.form.get('signupName')
@@ -125,6 +126,7 @@ def login():
             return redirect(url_for('main.profile'))
         elif not user:
             flash('User doesnot exist.\nPlease signup first.')
+            flash("Security Policy: Please remember your security question and answer. Note: Even if you forget your password, it is mandatory to remember the security question and answer. Otherwise, we won't be able to reset your password.")
             return redirect(url_for('auth.signup'))
         else:
             flash('Wrong Password. You may change the change in the forget password section!')
