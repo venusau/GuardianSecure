@@ -11,24 +11,33 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Audiowide">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Audiowide"
+    />
     <style>
       .custom-font {
-      font-family: "Audiowide", sans-serif;
-    }
-    .custom-text{
-      color: #055c19;
-    }
+        font-family: "Audiowide", sans-serif;
+      }
+      .custom-text {
+        color: #055c19;
+      }
     </style>
   </head>
 
   <body>
     {%include 'navbar.html'%}
-    <div
-      class="container pb-4 mt-5 col-md-6 offset-md-3"
-    >
+    <div class="container pb-4 mt-5 col-md-6 offset-md-3">
       <h2 class="mt-5 mb-3">Sign Up</h2>
-      <br>
+      <h5 class="alert alert-danger">
+        Security Policy: Please remember your security question and answer.
+      </h5>
+      <span class="text-danger"
+        >Note: Even if you forget your password, it is mandatory to remember the
+        security question and answer. Otherwise, we won't be able to reset your
+        password.</span
+      >
+      <br />
       {% with messages = get_flashed_messages() %} {% if messages %}
       <ul class="alert alert-danger">
         {% for message in messages %}
