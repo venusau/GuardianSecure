@@ -44,18 +44,18 @@ def password_strength(password, username):
     # Return True if no problems encountered, else return list of problems
     return not problems, problems
 
-@auth.route('/signup', methods=['GET','POST'])
+@auth.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        email = request.form.getlist('signupEmail')
+        email = request.form.get('signupEmail')  # Assuming only one email address is submitted
         fullname = request.form.get('signupName')
         password = request.form.get('signupPassword')
         confirm_password = request.form.get('confirmPassword')
         security_question = request.form.get('securityQuestion')
         security_answer = request.form.get('securityAnswer')
 
-        if not password==confirm_password:
-            problem='Both the password doesnot match '
+        if not password == confirm_password:
+            problem = 'Both passwords do not match'
             flash(problem)
             return redirect(url_for('auth.signup'))
         
@@ -64,18 +64,46 @@ def signup():
         user = User.query.filter_by(email=email).first()
         if valid:
             if user:
-                flash("User already exist")
+                flash("User already exists")
                 return redirect(url_for('auth.signup'))
 
             hashed_password = generate_password_hash(confirm_password)
-            new_user = User(email=email, name=fullname, password=hashed_password, security_question=security_question, security_answer=security_answer)
-            db.session.add(new_user)
-            db.session.commit()
-            return redirect(url_for('auth.login'))
+            session["email"] = email
+            session["fullname"] = fullname
+            session["hashed_password"] = hashed_password
+            session["security_question"] = security_question
+            session["security_answer"] = security_answer
+            random_number = random.randint(100000, 999999)
+            session["random"] = random_number
+            msg = Message("Subject", recipients=[email])  # Ensure email is a string, not a list
+            msg.body = f"Your OTP is {random_number}" 
+            mail.send(msg)
+            return redirect(url_for('auth.signup_confirmation'))
         else:
             for i in problems:
                 flash(i)
     return render_template('signup.html')
+
+@auth.route('/signup_confirmation', methods=["GET", "POST"])
+def signup_confirmation():
+    if request.method == 'POST':
+        email = session["email"]
+        fullname = session["fullname"]
+        hashed_password = session["hashed_password"]
+        security_question = session["security_question"]
+        security_answer = session["security_answer"]
+        random_number = session["random"]
+        otp = request.form.get("otp")
+        otp=int(otp)
+        if random_number == otp:
+            user = User(email=email, name=fullname, password=hashed_password, security_question=security_question, security_answer=security_answer)
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for("auth.login"))
+        else:
+            flash("Wrong OTP. Please try again!")
+
+    return render_template("signup_confirmation.html")
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
