@@ -46,7 +46,6 @@ def password_strength(password, username):
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
-    
     if request.method == 'POST':
         email = request.form.get('signupEmail')  # Assuming only one email address is submitted
         fullname = request.form.get('signupName')
@@ -100,6 +99,7 @@ def signup_confirmation():
             user = User(email=email, name=fullname, password=hashed_password, security_question=security_question, security_answer=security_answer)
             db.session.add(user)
             db.session.commit()
+            flash("You have been Signed up successfully! \n You can login in now to go to the profile page !")
             return redirect(url_for("auth.login"))
         else:
             flash("Wrong OTP. Please try again!")
