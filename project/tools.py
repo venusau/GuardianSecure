@@ -76,87 +76,68 @@ def md5_hash(text):
 @login_required
 def vulnerability_matcher():
     if request.method == 'POST':
-        target = request.form.get('targetURL')  # Corrected variable name
-        apiKey = os.environ.get("ZAP_API_KEY")# TODO: THIS HAS TO BE CHANGEDCHANGED
-        k = 2 if request.form.get('options') == "Active Scan" else 1
-
+        target = request.form.get('targetURL')
+        apiKey = os.environ.get("ZAP_API_KEY")
+        scan_type = request.form.get('options')
         
-        # ZAP is listening on port 8081
-        zap = ZAPv2(apikey=apiKey, proxies={'http': 'http://127.0.0.1:8081', 'https': 'http://127.0.0.1:8081'})
+        # ZAP is listening on port 8080
+        zap = ZAPv2(apikey=apiKey, proxies={'http': 'http://127.0.0.1:8080', 'https': 'http://127.0.0.1:8080'})
 
-        print('Spidering target {}'.format(target))
+        print(f'Spidering target {target}')
 
         # The scan returns a scan id to support concurrent scanning
         scanID = zap.spider.scan(target)
 
         while int(zap.spider.status(scanID)) < 100:
-            # Poll the status until it completes
-            print('Spider progress %: {}'.format(zap.spider.status(scanID)))
+            print(f'Spider progress %: {zap.spider.status(scanID)}')
             time.sleep(1)
 
         print('Spider has completed!')
-
-        # Prints the URLs the spider has crawled
         print('\n'.join(map(str, zap.spider.results(scanID))))
 
-        # If required post process the spider results
-        # TODO: Explore the Application more with Ajax Spider or Start scanning the application for vulnerabilities
-
-        print("Enter 1 for Passive scan and 2 for Active scan \n")
-        print("Warning: Active Scan takes much more time, Don't interrupt, it may affect the report")
-
-        if int(k) == 2:
+        if scan_type == "Active Scan":
             print(f'Active Scanning target {target}')
             scanID = zap.ascan.scan(url=target)
-            print(type(scanID))
-            print(scanID)
-            k=int(zap.ascan.status(scanID))
             while int(zap.ascan.status(scanID)) < 100:
-                k=int(zap.ascan.status(scanID))
-                if not k == int(zap.ascan.status(scanID)):
-                    print('Scan progress %: {}'.format(zap.ascan.status(scanID)))
-                    k=int(zap.ascan.status(scanID))
-                # else:
-                    # time.sleep(5)
-            # Loop until the scanner has finished
-
-        elif k == '1':
+                print(f'Scan progress %: {zap.ascan.status(scanID)}')
+                time.sleep(5)
+            print('Active Scan completed')
+        else:
             while int(zap.pscan.records_to_scan) > 0:
-                print('Records to passive scan : ' + zap.pscan.records_to_scan)
+                print(f'Records to passive scan: {zap.pscan.records_to_scan}')
                 time.sleep(2)
-            # Loop until the passive scan has finished
-
             print('Passive Scan completed')
-
-            # Print Passive scan results/alerts
-            print('Hosts: {}'.format(', '.join(zap.core.hosts)))
+            print(f'Hosts: {", ".join(zap.core.hosts)}')
             print('Alerts: ')
             print(zap.core.alerts())
 
-        # Get JSON Report
+        # Generate JSON Report
         headers = {
             'Accept': 'application/json',
             'X-ZAP-API-Key': apiKey
         }
 
-        generateFile = requests.get('http://localhost:8081/JSON/reports/action/generate/', params={
+        report_params = {
             'title': 'Report',
             'template': 'traditional-pdf',
             'sites': target,
-            'reportFileName': 'Report',
-            'reportDir': 'D:/GuardianSecure/project/'
-        }, headers=headers)
-        
-        # Assuming the report is saved as "Report.pdf"
-        # Attach the report to the email
+            'reportFileName': 'Report.pdf',
+            'reportDir': '/home/vicky/Desktop/project/GuardianSecure/project/'  # Adjusted for Linux file path
+        }
+
+        generateFile = requests.get('http://localhost:8080/JSON/reports/action/generate/', params=report_params, headers=headers)
+
         if generateFile.status_code == 200:
-            user_email=current_user.email
+            user_email = current_user.email
             msg = Message('Your report of the vulnerability scan is attached', recipients=[user_email])
             msg.body = 'Please find the attached report.'
-            with open("D:/GuardianSecure/project/Report.pdf", "rb") as fp: #TODO : HAS TO BE CORRECTED 
+            report_path = os.path.join(report_params['reportDir'], report_params['reportFileName'])
+            with open(report_path, "rb") as fp:
                 msg.attach("Report.pdf", "application/pdf", fp.read())
             mail.send(msg)
             flash("Your report has been sent to your email. Please check your mail for the report")
+        else:
+            flash("Failed to generate the report. Please try again later.", "error")
 
     return render_template('vulnerability_matcher.html')
 

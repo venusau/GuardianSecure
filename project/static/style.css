@@ -20,12 +20,7 @@
     color: #ffd700;
 } 
 
-.features-container {
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-    padding: 10px 10px;
-}
+
 
 .feature {
     background-color: #d6d6d6;
