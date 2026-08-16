@@ -174,6 +174,26 @@ def get_report(scan_id: str):
     if request.args.get("format") == "json":
         return jsonify(scan.result_json or {}), 200
 
+    if request.args.get("format") == "pdf":
+        from libs.pdf_client import generate_pdf
+
+        payload = dict(scan.result_json or {})
+        payload["scan_mode"] = scan.scan_type
+        try:
+            pdf = generate_pdf(payload)
+        except Exception:
+            current_app.logger.exception(
+                "PDF generation via pdf_generation service failed for %s", scan_id
+            )
+            return jsonify({"error": "PDF service unavailable. Try again later."}), 503
+        return Response(
+            pdf,
+            mimetype="application/pdf",
+            headers={
+                "Content-Disposition": f'attachment; filename="scan-{scan_id[:8]}.pdf"'
+            },
+        )
+
     if request.args.get("format") == "csv":
         buf = io.StringIO()
         writer = csv.writer(buf)

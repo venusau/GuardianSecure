@@ -14,6 +14,7 @@ services:
       TEMPORAL_ADDRESS: temporal:7233
       USE_TEMPORAL: "true"
       APP_PUBLIC_URL: http://localhost:5500
+      PDF_GENERATION_URL: http://pdf_generation:8000
       # Dev convenience: print OTP to logs + on-screen when mail isn't configured.
       # Remove (or set false) for any non-local deployment.
       DEV_LOG_OTP: "true"
@@ -23,6 +24,16 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+    restart: unless-stopped
+
+  # ---- pdf_generation microservice ----
+  # Stateless PDF renderer for vulnerability reports. Called by the gateway
+  # over HTTP; scale independently from the rest of the stack.
+  pdf_generation:
+    build:
+      context: ./pdf_generation
+    ports:
+      - "8001:8000"
     restart: unless-stopped
 
   # ---- Postgres ----
