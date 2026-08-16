@@ -11,9 +11,12 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250))
     email = db.Column(db.String(100), unique=True, index=True)
-    password = db.Column(db.String(500))
-    security_question = db.Column(db.String(250))
-    security_answer = db.Column(db.String(250))
+    password = db.Column(db.String(500))  # null for SSO-only accounts
+    phone = db.Column(db.String(30), nullable=True)
+    auth_provider = db.Column(db.String(30), default="local", nullable=False)
+    provider_sub = db.Column(db.String(255), nullable=True)
+    email_verified = db.Column(db.Boolean, default=False, nullable=False)
+    picture = db.Column(db.String(500), nullable=True)
     role = db.Column(db.String(20), default="user", nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), default=_utcnow)
 
@@ -22,6 +25,8 @@ class User(db.Model, UserMixin):
             "id": self.id,
             "name": self.name,
             "email": self.email,
+            "auth_provider": self.auth_provider,
+            "email_verified": self.email_verified,
             "role": self.role,
         }
 

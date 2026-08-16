@@ -9,6 +9,7 @@ In production these are partitioned for parallelism; in dev a single broker
 is sufficient. The client degrades gracefully (no-op) when Kafka is absent so
 the app still runs locally.
 """
+from __future__ import annotations
 
 from __future__ import annotations
 

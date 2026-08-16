@@ -49,6 +49,10 @@ def create_app() -> Flask:
     db.init_app(app)
     mail.init_app(app)
 
+    # ---- OAuth2 / OIDC SSO (registers providers present in env) ----
+    from .oauth_setup import init_oauth
+    init_oauth(app)
+
     # ---- Blueprints ----
     from .crud_user import crud_user
     from .main import main

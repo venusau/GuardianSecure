@@ -173,3 +173,23 @@ a:hover { color: var(--gs-primary-2); }
   .gs-auth-wrap { grid-template-columns: 1fr; }
   .gs-auth-aside { display: none; }
 }
+
+/* SSO divider + provider buttons */
+.gs-divider {
+  display: flex; align-items: center; text-align: center;
+  color: var(--gs-muted); font-size: 0.8rem; margin: 1.1rem 0 0.9rem;
+}
+.gs-divider::before, .gs-divider::after {
+  content: ""; flex: 1; height: 1px; background: var(--gs-border);
+}
+.gs-divider span { padding: 0 0.75rem; }
+
+.gs-sso { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.gs-sso-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.55rem 0.75rem; border-radius: 10px;
+  border: 1px solid var(--gs-border); background: var(--gs-surface);
+  color: var(--gs-text); font-weight: 600; font-size: 0.9rem;
+  text-decoration: none; transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.gs-sso-btn:hover { border-color: var(--gs-primary); transform: translateY(-1px); color: var(--gs-primary); }

@@ -2,6 +2,7 @@
 
 Replaces ZAP's spider with a bounded BFS crawler that discovers in-scope links.
 """
+from __future__ import annotations
 
 from __future__ import annotations
 
