@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+myenv/
+venv/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+*.db
+guardian.db
+tests/
+.pytest_cache/
+.mypy_cache/
+.DS_Store

@@ -1,62 +1,134 @@
 # GuardianSecure
 
-**Guardian Secure** is a robust web application focused on enhancing user security and privacy through a suite of cybersecurity tools and features. Built with Flask, it provides secure user authentication, account management, and a range of security tools to safeguard user data.
+**GuardianSecure** is an enterprise-grade web-security platform that lets users
+run **OWASP Top-10 vulnerability scans**, check password strength, and convert
+text to digests — all behind a secure, rate-limited authentication layer.
 
-## Key Features
+> **ZAP dependency removed.** The original app drove OWASP ZAP (`ZAPv2`) for
+> scanning. That dependency is gone. Scanning is now performed by a fully
+> **in-house engine** (`scanner/`) — crawl → passive analysis → active probing —
+> with no external scanning daemon.
 
-- **Secure Registration:** Users can securely create accounts with encrypted passwords and personalized security questions, ensuring the confidentiality of their data.
-- **Efficient Login:** Streamlined login process with password hashing for enhanced security and protection against unauthorized access.
-- **Password Management:** Users can reset their passwords using security questions to verify their identity, maintaining the security of their accounts.
-- **Responsive Design:** The application is built with a responsive design, ensuring optimal performance and user experience across various devices.
+---
 
-## Table of Contents
+## Architecture (built to scale to ~1M users)
 
-1. [Introduction](#introduction)
-2. [Landing Page and Authentication](#landing-page-and-authentication)
-3. [User Authentication](#user-authentication)
-4. [Password Reset Mechanism](#password-reset-mechanism)
-5. [Profile Page](#profile-page)
-6. [Cybersecurity Tools](#cybersecurity-tools)
-7. [Conclusion](#conclusion)
-8. [Future Work](#future-work)
+```
+                ┌──────────────┐
+   Browser ───► │ API Gateway  │  Flask, rate-limited, Redis-backed sessions
+                │  (gateway)   │
+                └──────┬───────┘
+                       │  POST /api/scans
+                       ▼
+                ┌──────────────┐      scan-requests      ┌─────────────────┐
+                │   Temporal   │ ───────────────────────► │  Scan Workers   │
+                │  Workflow    │                          │  (scanner/)     │
+                └──────────────┘                          └────────┬────────┘
+                       ▲                                           │ ScanResult
+                       │                                           ▼
+                ┌──────────────┐      scan-results       ┌─────────────────┐
+                │    Redis     │ ◄───────(cache)──────── │  Notification   │
+                │ (status/RL)  │                         │  Worker (email) │
+                └──────────────┘                         └─────────────────┘
+                       ▲
+                       │ persist
+                ┌──────┴───────┐
+                │   Postgres   │  (users + scans, Alembic migrations)
+                └──────────────┘
+```
 
-## Introduction
+| Concern            | Technology |
+|--------------------|------------|
+| Web framework      | Flask (API gateway) |
+| Scan orchestration | **Temporal** (`ScanWorkflow` + activity) |
+| Event streaming    | **Kafka** (`scan-requests`, `scan-results`) |
+| Cache / rate-limit | **Redis** |
+| Database           | **Postgres** + Alembic migrations |
+| Scanner engine     | In-house `scanner/` package (no ZAP) |
+| Containerization   | Docker + `docker-compose.yml` |
 
-The **Guardian Secure** web application provides users with comprehensive cybersecurity tools and functionalities to enhance their online security posture. This documentation outlines the key features, functionalities, and implementation details of the application following the IEEE format.
+The gateway enqueues a scan, immediately returns a `scan_id`, and the SPA-style
+UI polls `GET /api/scans/<id>`. When `USE_TEMPORAL=true` scans are driven by
+durable Temporal workflows; otherwise a local worker thread runs the same
+engine. Both paths share `project/scan_service.py`.
 
-## Landing Page and Authentication
+---
 
-- The landing page (`index.html`) is rendered using Flask's `render_template` function.
-- A base template (`base.html`) is created to contain common elements shared across multiple pages, ensuring consistency in design and layout.
+## The in-house scanner (OWASP Top-10)
 
-## User Authentication
+Located in `scanner/`:
 
-- Users are required to sign up and log in to access the functionalities of the web app.
-- Authentication is implemented using Flask-Login's `@login_required` decorator to restrict access to authenticated users only.
+- `spider.py` — bounded BFS crawler (same-host only).
+- `checks/` — one module per category:
+  - **A01** Broken Access Control — probes sensitive paths.
+  - **A02** Cryptographic Failures — HTTPS/HSTS, cookie flags.
+  - **A03** Injection — reflected XSS & SQLi payload probing.
+  - **A05** Security Misconfiguration — missing security headers, server banner.
+  - **A06** Vulnerable Components — outdated-tech signature + missing SRI.
+  - **A07** Auth Failures — login brute-force protection check.
+  - **A10** SSRF — internal/metadata endpoint probing.
+- `report.py` — JSON + HTML report (replaces the old ZAP PDF).
+- `scanner.py` — orchestrator (passive by default, active on demand).
 
-## Password Reset Mechanism
+Run the tests: `make test-scan`.
 
-- Users can reset their passwords by providing their email, new password, security question, and security answer.
-- Flask's `@login_required` decorator ensures that only authenticated users can access the password reset functionality.
+---
 
-## Profile Page
+## Local development
 
-- Upon successful login, users are redirected to `profile.html`, where they can access all the tools provided by the web app.
-- Access to the profile page is restricted to logged-in users using Flask's `@login_required` decorator.
+```bash
+cp .env.example .env          # fill SECRET_KEY, MAIL_*, DATABASE_URI
+make install                  # install dependencies
+make migrate                  # create Postgres schema (Alembic)
+make run-gateway              # http://localhost:5500
+```
 
-## Cybersecurity Tools
+The app also calls `db.create_all()` for zero-config dev when no migrations
+exist yet; **production must use Alembic** (`make migrate`).
 
-- **Password Strength Checker:** Allows users to assess the strength of their passwords.
-- **Plain Text to Cipher (SHA256 and MD5):** Converts plain text input into cipher text using SHA256 and MD5 encryption algorithms.
-- **Vulnerability Matcher Tool:** Users can input their web app's URL to identify OWASP's top 10 vulnerabilities using spidering process with options for active and passive scans.
-- **AI Chatbot:** Users can interact with an AI chatbot to get responses to cybersecurity-related queries.
+### Run the full stack (recommended)
 
-## Conclusion
+```bash
+cp .env.example .env
+docker compose up -d          # or: make docker-up
+```
 
-The **Guardian Secure** web application provides users with a comprehensive suite of cybersecurity tools, enhancing their online security posture. The implementation of Flask and Flask-Login ensures secure authentication and access control, while the range of tools empowers users to protect their digital assets effectively.
+This starts gateway, Postgres, Redis, Kafka, Temporal, 3 scan-workers and the
+notification worker.
 
-## Future Work
+### Components
 
-- Further enhancements and optimizations to existing functionalities.
-- Integration of additional cybersecurity tools and features.
-- Continuous testing, feedback gathering, and refinement to ensure robustness and usability of the web application.
+| Command | What it runs |
+|---------|--------------|
+| `make run-gateway` | Flask API gateway |
+| `make run-worker`  | Temporal scan worker (scale horizontally) |
+| `make run-notifier`| Kafka → email notification worker |
+| `make migrate`     | Apply Alembic DB migrations |
+
+---
+
+## Security hardening applied
+
+- Secrets via env (`SECRET_KEY`, DB, mail) — no hardcoded keys.
+- **Removed plaintext password comparisons** for admin checks (`auth.py`,
+  `main.py`, `crud_user.py`); admin is now a `role` column.
+- Per-user **rate limiting** on the scan API via Redis.
+- `delete_user` now requires auth + admin.
+- Report/scan access is ownership-checked (`current_user.id`).
+
+---
+
+## Project layout
+
+```
+project/            Flask app (auth, tools, api, models, scan_service)
+scanner/            In-house OWASP Top-10 scanner (no ZAP)
+libs/               Redis + Kafka clients
+temporal/           Workflow + activity + worker
+services/notification/   Kafka consumer -> email
+migrations/         Alembic migrations
+deploy/             Dockerfiles
+docker-compose.yml  Full stack
+Makefile            Dev & ops commands
+tests/              Scanner pytest suite
+```

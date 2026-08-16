@@ -1,78 +1,59 @@
 {% extends "base.html" %}
-{% block title %}Profile - Guardian Secure{% endblock %}
+{% block title %}Dashboard — GuardianSecure{% endblock %}
 
 {% block head %}
 {{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
 {% endblock %}
 
-
 {% block content %}
-{% with messages = get_flashed_messages() %} {% if messages %}
-    <div class="alert alert-success alert-dismissible fade show container col-md-6 offset-md-3">
-      {% for message in messages %}
-      {{ message }}
-      {% endfor %}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-0">Hello, {{ username }}</h2>
+      <span class="text-muted">{{ email }}</span>
     </div>
-    {% endif %} {% endwith %}
+    <a href="/vulnerability_matcher" class="btn btn-gs">+ New Scan</a>
+  </div>
 
-<!-- Tool Section -->
-<div class="container-fluid mx-auto px-4 py-8 tool-section">
-    <main>
-        <section class="text-center mb-8">
-            <h2 class="text-2xl font-semibold">Profile Page</h2>
-            <p class="text-white">Explore your security services</p>
-        </section>
-        <div class="container">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-            <div class="col"> 
-                <button class="tool-card">
-                <a href="/password_strength">
-                <div class="tool-card">
-                    <h3 class="text-xl custom-text-2 fw-bold">Password Strength Testing</h3>
-                    <p class="text-muted">Test the strength of your passwords to ensure they meet security standards.</p>
-                </div>
-            </a>
-        </button>
-            </div>
-            <div class="col">
-                <button class="tool-card">
-                    <a href="/cipher_conversion">
-                <div class="tool-card">
-                    <h3 class="text-xl custom-text-2 fw-bold">Plain text to Cipher text</h3>
-                    <p class="text-muted">Convert plain text into encrypted cipher text for secure communication.</p>
-                </div>
-                </a>
-                </button>
-            </div>
-            <div class="col">
-                <button class="tool-card">
-                    <a href="/vulnerability_matcher">
-                <div class="tool-card">
-                    <h3 class="text-xl custom-text-2 fw-bold">Vulnerability Matcher tool</h3>
-                    <p class="text-muted">Identify and match vulnerabilities using OWASP's top 10 vulnerabilities list.</p>
-                </div>
-                </a>
-                </button>
-            </div>
-            <div class="col">
-                <button class="tool-card">
-                    <a href="{{url_for('tools.ai_chatbot')}}">
-                <div class="tool-card">
-                    <h3 class="text-xl custom-text-2 fw-bold">AI Chatbot</h3>
-                    <h5 class="custom-text-2">Coming soon...</h5>
-                    <p class="text-muted">Engage with our AI-powered chatbot to get assistance and support.</p>
-                </div>
-                </a>
-                </button>
-            </div>
-        </div>
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+      <div class="gs-stat"><div class="num">4</div><div class="lbl">Security Tools</div></div>
     </div>
-    </main>
-</div>
+    <div class="col-6 col-lg-3">
+      <div class="gs-stat"><div class="num" id="stat-scans">—</div><div class="lbl">Scans Run</div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="gs-stat"><div class="num text-success">100%</div><div class="lbl">In-house Engine</div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="gs-stat"><div class="num">10</div><div class="lbl">OWASP Categories</div></div>
+    </div>
+  </div>
+
+  <h4 class="mb-3">Security Toolkit</h4>
+  <div class="gs-tool-grid">
+    <a class="gs-tool-card" href="/password_strength">
+      <div class="gs-tool-icon">🔐</div>
+      <h3>Password Strength</h3>
+      <p class="text-muted small mb-0">Test and harden your passwords.</p>
+    </a>
+    <a class="gs-tool-card" href="/cipher_conversion">
+      <div class="gs-tool-icon">#️⃣</div>
+      <h3>Cipher Conversion</h3>
+      <p class="text-muted small mb-0">SHA-256 / MD5 digests.</p>
+    </a>
+    <a class="gs-tool-card" href="/vulnerability_matcher">
+      <div class="gs-tool-icon">🛡️</div>
+      <h3>Vulnerability Scanner</h3>
+      <p class="text-muted small mb-0">Run an OWASP Top-10 scan.</p>
+    </a>
+    <a class="gs-tool-card" href="{{ url_for('tools.ai_chatbot') }}">
+      <div class="gs-tool-icon">🤖</div>
+      <h3>AI Assistant <span class="badge text-bg-secondary">soon</span></h3>
+      <p class="text-muted small mb-0">Security Q&amp;A assistant.</p>
+    </a>
+  </div>
 </div>
 
-{%block footer%}
-{%endblock%}
+{% block footer %}{% endblock %}
 {% endblock %}

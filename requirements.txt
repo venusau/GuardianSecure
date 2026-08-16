@@ -7,19 +7,20 @@ Flask-Cors==4.0.1
 Flask-Login==0.6.3
 Flask-Mail==0.9.1
 Flask-SQLAlchemy==3.1.1
-greenlet==3.0.3
-idna==3.7
-itsdangerous==2.2.0
-Jinja2==3.1.4
-MarkupSafe==2.1.5
-mysql-client==0.0.1
-mysqlclient==2.2.4
 python-dotenv==1.0.1
-python-owasp-zap-v2.4==0.1.0
 requests==2.32.2
-six==1.16.0
 SQLAlchemy==2.0.30
 typing_extensions==4.11.0
-urllib3==2.2.1
 Werkzeug==3.0.3
-zaproxy==0.3.1
+
+# Database
+psycopg2-binary==2.9.9
+
+# Caching / messaging / orchestration
+redis==5.0.4
+kafka-python==2.0.2
+temporalio==1.5.1
+alembic==1.13.1
+Flask-Migrate==4.0.7
+
+# Removed: python-owasp-zap-v2.4, zaproxy (replaced by in-house scanner/scanner/)

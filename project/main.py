@@ -22,8 +22,7 @@ def profile():
 @main.route('/admin')
 @login_required
 def admin():
-    user = User.query.filter_by(email=os.environ.get("ADMIN_EMAIL")).first()
-    if current_user.name==user.name and current_user.password==user.password:
+    if current_user.role == "admin":
         return render_template('admin.html')
     else:
         return redirect(url_for('main.index'))

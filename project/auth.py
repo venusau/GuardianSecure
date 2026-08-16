@@ -5,8 +5,24 @@ from . import db,mail
 import random
 from flask_mail import Message
 from flask_login import login_user,logout_user,login_required, current_user
+import os
 
 auth = Blueprint('auth', __name__)
+
+
+def _send_otp(email: str, otp: int) -> None:
+    """Send OTP via email; in DEV_LOG_OTP mode print it to the console instead."""
+    if os.environ.get("DEV_LOG_OTP", "false").lower() == "true":
+        print(f"[DEV OTP] {email} -> {otp}")
+        flash(f"DEV MODE: your OTP is {otp}", "success")
+        return
+    try:
+        msg = Message("Your GuardianSecure verification code", recipients=[email])
+        msg.body = f"Your OTP is {otp}"
+        mail.send(msg)
+    except Exception as e:
+        print(f"[OTP send failed] {email}: {e}")
+        flash("Could not send OTP email. Check mail configuration.", "error")
 
 
 def password_strength(password, username):
@@ -33,7 +49,7 @@ def password_strength(password, username):
         problems.append("Password must contain at least one numeric digit")
     
     # Check if password contains at least one special character
-    special_characters = "!@#$%^&*()-_=+[{]}\|;:'\",<.>/?"
+    special_characters = "!@#$%^&*()-_=+[{]}|;:'\",<.>/?"
     if not any(char in special_characters for char in password):
         problems.append("Password must contain at least one special character")
 
@@ -67,7 +83,7 @@ def signup():
                 flash("User already exists")
                 return redirect(url_for('auth.signup'))
 
-            hashed_password = generate_password_hash(confirm_password)
+            hashed_password = generate_password_hash(confirm_password, method="pbkdf2:sha256")
             session["email"] = email
             session["fullname"] = fullname
             session["hashed_password"] = hashed_password
@@ -75,9 +91,7 @@ def signup():
             session["security_answer"] = security_answer
             random_number = random.randint(100000, 999999)
             session["random"] = random_number
-            msg = Message("Subject", recipients=[email])  # Ensure email is a string, not a list
-            msg.body = f"Your OTP is {random_number}" 
-            mail.send(msg)
+            _send_otp(email, random_number)
             return redirect(url_for('auth.signup_confirmation'))
         else:
             for i in problems:
@@ -117,10 +131,7 @@ def login():
         
         if user and check_password_hash(user.password, password):
             login_user(user, remember=remember)
-            useradmin = User.query.filter_by(email="admin@gmail.com").first()
-            
-            if current_user.name=='Admin' and current_user.password==useradmin.password:
-                
+            if user.role == "admin":
                 return redirect(url_for('main.admin'))
             flash(f"Welcome, {user.name}")
             return redirect(url_for('main.profile'))
@@ -165,9 +176,7 @@ def reset_password():
             return redirect(url_for('auth.reset_password'))
         
         random_number = random.randint(100000, 999999)
-        msg = Message("Subject", recipients=[email])
-        msg.body = f"Your OTP is {random_number}" 
-        mail.send(msg)
+        _send_otp(email, random_number)
         # Storing values in session
         session['email'] = email
         session['random_number'] = random_number
@@ -193,7 +202,7 @@ def reset_password_code():
         user = User.query.filter_by(email=email).first()
         
         if user and user_random_otp == str(random_number):
-            hashed_password = generate_password_hash(confirm_new_password)
+            hashed_password = generate_password_hash(confirm_new_password, method="pbkdf2:sha256")
             user.password=hashed_password
             db.session.commit()#this was the problem 
             return redirect(url_for('auth.login'))

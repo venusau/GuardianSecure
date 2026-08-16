@@ -1,55 +1,44 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
-    <div class="container-fluid">
-      <div class="navbar-brand me-2">
-        <a href="/">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
-          <!-- Background -->
-          <circle cx="60" cy="60" r="50" fill="#343a40"/>
-          
-          <!-- Globe -->
-          <circle cx="60" cy="60" r="35" fill="#3e8ef7"/>
-          
-          <!-- Shield -->
-          <path d="M60,15 L15,60 L60,90 L105,60 Z" fill="#ffd700"/>
-          
-          <!-- Letter G -->
-          <text x="40" y="80" fill="#343a40" font-family="Arial" font-size="30" font-weight="bold" text-anchor="middle">G</text>
-          
-          <!-- Letter S -->
-          <text x="80" y="80" fill="#343a40" font-family="Arial" font-size="30" font-weight="bold" text-anchor="middle">S</text>
-        </svg>
-      </a>
-      </div>
-      
-      <!-- <a class="navbar-brand custom-font" href="/"><strong class="custom-text">G</strong>uardian <strong class="custom-text">S</strong>ecure</a> -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/profile">Profile</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Account
-            </a>
-            <div class="dropdown-menu custom-bg" aria-labelledby="accountDropdown">
-                {% if current_user.is_authenticated %}
-                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a>
-                {%if current_user.name=='Admin' and current_user.email=='admin@gmail.com'%}
-                <a class="dropdown-item" href="/admin">Admin</a>
-                {%endif%}
-                {% else %}
-                <a class="dropdown-item" href="/login" >Login</a>
-                <a class="dropdown-item" href="/signup" >Sign Up</a>
-                {% endif %}
-              </div>
-          </li>
-        </ul>
-      </div>
+<nav class="navbar navbar-expand-lg gs-navbar sticky-top">
+  <div class="container-fluid px-3">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+      <svg class="gs-logo" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="50" fill="#121826" stroke="#00e0a4" stroke-width="3"/>
+        <path d="M60,22 L34,40 V66 C34,86 60,98 60,98 C60,98 86,86 86,66 V40 Z" fill="#00e0a4" opacity="0.9"/>
+        <path d="M48,62 l9,9 l16,-20" stroke="#0b0f17" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="gs-brand">GuardianSecure</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#gsNav" aria-controls="gsNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="gsNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        {% if current_user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link" href="/profile">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="/vulnerability_matcher">Scanner</a></li>
+        {% endif %}
+      </ul>
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        {% if current_user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="badge rounded-pill text-bg-secondary">{{ current_user.name }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end gs-card" style="background:var(--gs-surface)">
+            <li><a class="dropdown-item text-light" href="/profile">Dashboard</a></li>
+            {% if current_user.role == 'admin' %}
+            <li><a class="dropdown-item text-light" href="/admin">Admin</a></li>
+            {% endif %}
+            <li><hr class="dropdown-divider border-secondary" /></li>
+            <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">Logout</a></li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+        <li class="nav-item"><a class="btn btn-gs btn-sm ms-2" href="/signup">Get Started</a></li>
+        {% endif %}
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>

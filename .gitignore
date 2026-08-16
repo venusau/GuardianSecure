@@ -1,39 +1,43 @@
-# Ignore .env files
+# ---- Secrets / environment ----
 .env
+.env.*
+!.env.example
 
-# Ignore compiled Python files
+# ---- Python ----
+__pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Ignore the myenv directory
+# ---- Databases (local artifacts) ----
+*.db
+*.sqlite3
+*.sqlite
+instance/
+
+# ---- Virtual environments ----
 myenv/
+venv/
+.venv/
 
-*.txt
+# ---- Local TLS / certs (e.g. leftover ZAP ca.pem) ----
+*.pem
+*.key
 
-# Logs
-logs
+# ---- Build / dist ----
+build/
+dist/
+
+# ---- Logs ----
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+logs/
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
+# ---- Editor / OS ----
+.vscode/
 .idea
 .DS_Store
 *.suo
-*.ntvs*
-*.njsproj
-*.sln
 *.sw?
-*.pem
-*.drawio
-*.docx
-*.pdf

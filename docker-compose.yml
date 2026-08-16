@@ -1,0 +1,130 @@
+services:
+  # ---- API gateway (Flask) ----
+  gateway:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    ports:
+      - "5500:5500"
+    env_file: .env
+    environment:
+      DATABASE_URI: postgresql://guardian:guardian@postgres:5432/guardian
+      REDIS_URL: redis://redis:6379/0
+      KAFKA_BOOTSTRAP: kafka:9092
+      TEMPORAL_ADDRESS: temporal:7233
+      USE_TEMPORAL: "true"
+      APP_PUBLIC_URL: http://localhost:5500
+      # Dev convenience: print OTP to logs + on-screen when mail isn't configured.
+      # Remove (or set false) for any non-local deployment.
+      DEV_LOG_OTP: "true"
+    command: sh -c "alembic upgrade head && python app.py"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  # ---- Postgres ----
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: guardian
+      POSTGRES_PASSWORD: guardian
+      POSTGRES_DB: guardian
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U guardian"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # ---- Redis ----
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+
+  # ---- Kafka + Zookeeper ----
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+  # ---- Temporal (scan orchestration) ----
+  # Uses the shared Postgres as its datastore (the auto-setup image does not
+  # support a file-based sqlite datastore via the DB env var).
+  temporal:
+    image: temporalio/auto-setup:1.24.0
+    ports:
+      - "7233:7233"
+    environment:
+      DB: postgres12
+      DBNAME: temporal
+      VISIBILITY_DBNAME: temporal_visibility
+      DB_PORT: 5432
+      POSTGRES_SEEDS: postgres
+      POSTGRES_USER: guardian
+      POSTGRES_PWD: guardian
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ---- Scan workers (scale horizontally) ----
+  scan-worker:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URI: postgresql://guardian:guardian@postgres:5432/guardian
+      REDIS_URL: redis://redis:6379/0
+      USE_TEMPORAL: "true"
+      TEMPORAL_ADDRESS: temporal:7233
+    command: sh -c "alembic upgrade head && python temporal/worker.py"
+    depends_on:
+      - temporal
+      - postgres
+    deploy:
+      replicas: 3
+    restart: unless-stopped
+
+  # ---- Notification worker ----
+  notifier:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URI: postgresql://guardian:guardian@postgres:5432/guardian
+      KAFKA_BOOTSTRAP: kafka:9092
+      KAFKA_ENABLED: "true"
+    command: sh -c "alembic upgrade head && python services/notification/consumer.py"
+    depends_on:
+      - kafka
+      - postgres
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:

@@ -1,37 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
   <head>
-    {% block head %}
-    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="GuardianSecure — enterprise-grade web vulnerability scanning & security toolkit." />
+    <title>{% block title %}GuardianSecure{% endblock %}</title>
 
-    
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="static/style.css" />
-    
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Audiowide">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sofia">
-    <script defer src="static/script.js"></script>
-    <script defer
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}" />
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
-    {%endblock%}
-    <title>{% block title %} {% endblock %}</title>
+      crossorigin="anonymous"></script>
+    {% block head %}{% endblock %}
   </head>
 
-  <body class="text-bg-dark">
-    <header>{%include 'navbar.html'%}</header>
-    {%block content%}
-    
-    {%endblock%}
-    
+  <body>
+    {% include 'navbar.html' %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090">
+          {% for category, message in messages %}
+            <div class="toast align-items-center text-bg-{{ 'danger' if category=='error' else ('success' if category=='success' else 'primary') }} border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="d-flex">
+                <div class="toast-body">{{ message }}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <main class="gs-main">{% block content %}{% endblock %}</main>
+
+    {% block footer %}
+    <footer class="gs-footer mt-5">
+      <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center py-4">
+        <span class="text-secondary small">© 2026 GuardianSecure · Self-hosted OWASP Top-10 scanning engine</span>
+        <span class="text-secondary small">Secured with TLS · Rate-limited · Audited</span>
+      </div>
+    </footer>
+    {% endblock %}
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.toast').forEach(function (t) {
+          new bootstrap.Toast(t, { delay: 5000 }).show();
+        });
+      });
+    </script>
+    {% block scripts %}{% endblock %}
   </body>
-{%block footer%}
-  {%endblock%}
 </html>
