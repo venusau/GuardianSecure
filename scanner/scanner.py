@@ -21,7 +21,7 @@ ACTIVE_CHECKS = [InjectionCheck(), SsrfCheck(), AccessControlCheck(), AuthFailur
 
 
 class Scanner:
-    def __init__(self, max_pages: int = 50, timeout: int = 10, verify_ssl: bool = True):
+    def __init__(self, max_pages: int = 50, timeout: int = 20, verify_ssl: bool = True):
         self.max_pages = max_pages
         self.timeout = timeout
         self.verify_ssl = verify_ssl

@@ -1,33 +1,31 @@
 {% extends "base.html" %}
-{% block title %}AI Chatbot - Guardian Secure{% endblock %}
-
-{% block home %}{% endblock %}
-
-{% block head %}
-{{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
-{% endblock %}
-
-{% block signuplogin %}
-<div class="account-dropdown-content" id="accountDropdown">
-    <a href="/logout"><button>Logout</button></a>
-</div>
-{% endblock %}
-
+{% block title %}AI Security Assistant — GuardianSecure{% endblock %}
 {% block content %}
-<div class="content">
-    <div class="content-inner">
-        <h1>Welcome to our chatbot</h1>
-        <p>This is your profile chatbot page. You can interact with the chatbot here:</p>
-        <p><strong>You:</strong> {{ user_input }}</p>
-        <p><strong>Chatbot:</strong> {{ bot_response }}</p>
-        <form action="{{ url_for('tools.ai_chatbot') }}" method="post">
-            <textarea name="message" rows="4" cols="50" placeholder="Type your message to the chatbot"></textarea><br>
-            <button type="submit">Send</button>
-        </form>
-        <div class="chat-history">
-            <!-- Display chat history here -->
-        </div>
+<div class="mx-auto max-w-2xl px-4 py-12 sm:px-6">
+  <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 backdrop-blur">
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-white">AI Security Assistant</h1>
+      <p class="mt-1 text-sm text-slate-400">Ask security questions and get remediation guidance.</p>
     </div>
+
+    <div class="mb-6 space-y-4">
+      {% if user_input %}
+      <div class="flex justify-end">
+        <div class="max-w-[85%] rounded-2xl rounded-br-md bg-emerald-500/15 px-4 py-3 text-sm text-emerald-100">You: {{ user_input }}</div>
+      </div>
+      {% endif %}
+      {% if bot_response %}
+      <div class="flex justify-start">
+        <div class="max-w-[85%] rounded-2xl rounded-bl-md border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-200">Guardian: {{ bot_response }}</div>
+      </div>
+      {% endif %}
+    </div>
+
+    <form action="{{ url_for('tools.ai_chatbot') }}" method="post" class="space-y-4">
+      <textarea name="message" rows="4" required placeholder="e.g. How do I remediate SQL injection on an Express app?"
+        class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"></textarea>
+      <button type="submit" class="w-full rounded-xl bg-emerald-500 py-2.5 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-400">Send</button>
+    </form>
+  </div>
 </div>
 {% endblock %}

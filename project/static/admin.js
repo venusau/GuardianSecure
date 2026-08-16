@@ -8,13 +8,14 @@ function getUsers() {
         tableBody.innerHTML = "";
         users.forEach((user) => {
           const row = document.createElement("tr");
+          row.className = "border-t border-slate-800/80 transition hover:bg-slate-800/30";
           row.innerHTML = `
-                        <td>${user.id}</td>
-                        <td>${user.name}</td>
-                        <td>${user.email}</td>
-                        <td>
-                            <button onclick="updateUser(${user.id})">Update</button>
-                            <button onclick="deleteUser(${user.id})">Delete</button>
+                        <td class="px-5 py-3.5 text-slate-400">${user.id}</td>
+                        <td class="px-5 py-3.5 font-medium text-white">${user.name}</td>
+                        <td class="px-5 py-3.5 text-slate-400">${user.email}</td>
+                        <td class="px-5 py-3.5">
+                            <button onclick="updateUser(${user.id})" class="rounded-lg border border-emerald-500/50 px-3 py-1 text-xs font-semibold text-emerald-300 transition hover:bg-emerald-500/10">Update</button>
+                            <button onclick="deleteUser(${user.id})" class="ml-1 rounded-lg border border-rose-500/50 px-3 py-1 text-xs font-semibold text-rose-300 transition hover:bg-rose-500/10">Delete</button>
                         </td>
                     `;
           tableBody.appendChild(row);

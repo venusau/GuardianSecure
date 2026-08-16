@@ -1,75 +1,101 @@
 {% extends 'base.html' %}
 {% block title %}GuardianSecure — Self-hosted Web Security Platform{% endblock %}
 {% block content %}
-<section class="gs-hero">
-  <div class="container">
-    <span class="badge rounded-pill text-bg-secondary mb-3">OWASP Top-10 · No third-party scanners</span>
-    <h1>Scan. Harden. Defend.</h1>
-    <p class="lead">
-      GuardianSecure is an enterprise-grade security platform with a fully
-      in-house vulnerability scanning engine. Discover broken access control,
-      injection flaws, misconfigurations and more — without sending your data
-      to external tools.
+
+<section class="relative overflow-hidden border-b border-slate-800/60">
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="absolute -top-40 left-1/2 h-[480px] w-[720px] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-3xl"></div>
+    <div class="absolute right-0 top-24 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl"></div>
+    <div class="absolute inset-0 opacity-[0.04]" style="background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);background-size:44px 44px"></div>
+  </div>
+
+  <div class="relative mx-auto max-w-7xl px-6 py-20 text-center sm:py-28">
+    <span class="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 font-mono text-xs font-semibold tracking-wide text-emerald-300">
+      <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-400"></span>
+      OWASP Top-10 · 100% in-house engine
+    </span>
+    <h1 class="mx-auto mt-6 max-w-3xl text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+      Scan. Harden.<br class="hidden sm:block" />
+      <span class="bg-gradient-to-r from-emerald-300 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">Defend.</span>
+    </h1>
+    <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-400">
+      GuardianSecure is an enterprise-grade security platform with a fully in-house
+      vulnerability scanning engine. Discover broken access control, injection flaws,
+      misconfigurations and more — without sending your data to external tools.
     </p>
-    <div class="d-flex gap-3 justify-content-center mt-4 flex-wrap">
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
       {% if current_user.is_authenticated %}
-        <a href="/vulnerability_matcher" class="btn btn-gs">Launch Scanner</a>
-        <a href="/profile" class="btn btn-gs-outline">Go to Dashboard</a>
+        <a href="/vulnerability_matcher" class="rounded-xl bg-emerald-500 px-7 py-3 text-sm font-bold text-slate-950 shadow-xl shadow-emerald-500/25 transition hover:-translate-y-0.5 hover:bg-emerald-400">Launch Scanner</a>
+        <a href="/profile" class="rounded-xl border border-slate-700 px-7 py-3 text-sm font-semibold text-slate-200 transition hover:border-emerald-500/60 hover:text-emerald-300">Go to Dashboard</a>
       {% else %}
-        <a href="/signup" class="btn btn-gs">Start Free</a>
-        <a href="/login" class="btn btn-gs-outline">Sign In</a>
+        <a href="/signup" class="rounded-xl bg-emerald-500 px-7 py-3 text-sm font-bold text-slate-950 shadow-xl shadow-emerald-500/25 transition hover:-translate-y-0.5 hover:bg-emerald-400">Start Free</a>
+        <a href="/login" class="rounded-xl border border-slate-700 px-7 py-3 text-sm font-semibold text-slate-200 transition hover:border-emerald-500/60 hover:text-emerald-300">Sign In</a>
       {% endif %}
+    </div>
+
+    <div class="mx-auto mt-16 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur">
+        <p class="text-2xl font-extrabold text-white">10</p>
+        <p class="text-xs text-slate-500">OWASP categories</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur">
+        <p class="text-2xl font-extrabold text-white">0</p>
+        <p class="text-xs text-slate-500">Third-party scanners</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur">
+        <p class="text-2xl font-extrabold text-white">1M+</p>
+        <p class="text-xs text-slate-500">Scans at scale</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur">
+        <p class="text-2xl font-extrabold text-emerald-400">24/7</p>
+        <p class="text-xs text-slate-500">Always-on defense</p>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="container pb-5">
-  <div class="row g-4">
-    <div class="col-md-6 col-lg-3">
-      <div class="gs-card gs-card-hover h-100">
-        <div class="gs-tool-icon">🔐</div>
-        <h3 class="h5">Password Strength</h3>
-        <p class="text-muted small">Validate credentials against modern policy and get auto-generated hardened suggestions.</p>
-      </div>
-    </div>
-    <div class="col-md-6 col-lg-3">
-      <div class="gs-card gs-card-hover h-100">
-        <div class="gs-tool-icon">#️⃣</div>
-        <h3 class="h5">Cipher Conversion</h3>
-        <p class="text-muted small">Convert plaintext into SHA-256 / MD5 digests for integrity verification.</p>
-      </div>
-    </div>
-    <div class="col-md-6 col-lg-3">
-      <div class="gs-card gs-card-hover h-100">
-        <div class="gs-tool-icon">🛡️</div>
-        <h3 class="h5">Vulnerability Scanner</h3>
-        <p class="text-muted small">Crawl targets and run passive + active OWASP Top-10 checks on our own engine.</p>
-      </div>
-    </div>
-    <div class="col-md-6 col-lg-3">
-      <div class="gs-card gs-card-hover h-100">
-        <div class="gs-tool-icon">🤖</div>
-        <h3 class="h5">AI Security Assistant</h3>
-        <p class="text-muted small">Ask security questions and get remediation guidance (coming soon).</p>
-      </div>
-    </div>
+<section class="mx-auto max-w-7xl px-6 py-16">
+  <div class="mb-10 text-center">
+    <h2 class="text-3xl font-bold text-white">Your security toolkit</h2>
+    <p class="mt-2 text-slate-400">Everything you need to test and harden your attack surface.</p>
   </div>
 
-  <div class="gs-card mt-5">
-    <div class="row align-items-center">
-      <div class="col-md-8">
-        <h3 class="h4">Built for scale</h3>
-        <p class="text-muted mb-0">
-          Scans are orchestrated with Temporal, streamed through Kafka, cached in
-          Redis and stored in Postgres — horizontally scalable to millions of
-          assessments.
+  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+    <a href="/password_strength" class="group rounded-2xl border border-slate-800 bg-slate-900/60 p-6 transition hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/10">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-2xl">🔐</div>
+      <h3 class="text-lg font-semibold text-white group-hover:text-emerald-300">Password Strength</h3>
+      <p class="mt-2 text-sm text-slate-400">Validate credentials against modern policy and get auto-generated hardened suggestions.</p>
+    </a>
+    <a href="/cipher_conversion" class="group rounded-2xl border border-slate-800 bg-slate-900/60 p-6 transition hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/10">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-2xl">#️⃣</div>
+      <h3 class="text-lg font-semibold text-white group-hover:text-emerald-300">Cipher Conversion</h3>
+      <p class="mt-2 text-sm text-slate-400">Convert plaintext into SHA-256 / MD5 digests for integrity verification.</p>
+    </a>
+    <a href="/vulnerability_matcher" class="group rounded-2xl border border-slate-800 bg-slate-900/60 p-6 transition hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/10">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-2xl">🛡️</div>
+      <h3 class="text-lg font-semibold text-white group-hover:text-emerald-300">Vulnerability Scanner</h3>
+      <p class="mt-2 text-sm text-slate-400">Crawl targets and run passive + active OWASP Top-10 checks on our own engine.</p>
+    </a>
+    <a href="{{ url_for('tools.ai_chatbot') }}" class="group rounded-2xl border border-slate-800 bg-slate-900/60 p-6 transition hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/10">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-2xl">🤖</div>
+      <h3 class="text-lg font-semibold text-white group-hover:text-emerald-300">AI Security Assistant</h3>
+      <p class="mt-2 text-sm text-slate-400">Ask security questions and get remediation guidance.</p>
+    </a>
+  </div>
+
+  <div class="mt-14 overflow-hidden rounded-2xl border border-slate-800 bg-gradient-to-r from-slate-900 via-slate-900/80 to-emerald-950/40">
+    <div class="flex flex-col items-start justify-between gap-6 p-8 md:flex-row md:items-center">
+      <div class="max-w-xl">
+        <h3 class="text-2xl font-bold text-white">Built for scale</h3>
+        <p class="mt-2 text-slate-400">
+          Scans are orchestrated with Temporal, streamed through Kafka, cached in Redis
+          and stored in Postgres — horizontally scalable to millions of assessments.
         </p>
       </div>
-      <div class="col-md-4 text-md-end mt-3 mt-md-0">
-        <span class="badge text-bg-secondary me-1">Temporal</span>
-        <span class="badge text-bg-secondary me-1">Kafka</span>
-        <span class="badge text-bg-secondary me-1">Redis</span>
-        <span class="badge text-bg-secondary">Postgres</span>
+      <div class="flex flex-wrap gap-2">
+        {% for t in ["Temporal", "Kafka", "Redis", "Postgres"] %}
+        <span class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 font-mono text-xs font-semibold text-emerald-300">{{ t }}</span>
+        {% endfor %}
       </div>
     </div>
   </div>

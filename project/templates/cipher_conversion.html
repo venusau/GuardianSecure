@@ -1,54 +1,39 @@
-{% extends "base.html" %} {% block title %}Cipher Text Conversion - Guardian
-Secure{% endblock %} 
-
-{%block home%} {%endblock%} 
-
-{% block head %} 
-{{ super() }}
-{% endblock %} 
-
-
-
+{% extends "base.html" %}
+{% block title %}Cipher Text Conversion — GuardianSecure{% endblock %}
 {% block content %}
-<div class="container col-md-6 offset-md-3">
-  <div class="mb-4"><h3>Cipher Text Converter</h3></div>
-  <form action="/cipher_conversion" method="post">
-    <div class="mb-3">
-    <label for="text" class="form-label">Enter the string to be hashed : </label><br />
-    <input type="text" id="text" name="text" required class="form-control"><br>
-  </div>
-  <div class="mt-3 mb-3">
-    <label for="hash_choice">Choose Hashing Algorithm :</label>
-    <br>
-    <br>
-    <select class="form-control" id="hash_choice" name="hash_choice">
-      <option value="1">SHA256</option>
-      <option value="2">MD5</option></select>
+<div class="mx-auto max-w-xl px-4 py-12 sm:px-6">
+  <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 backdrop-blur">
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-white">Cipher Text Converter</h1>
+      <p class="mt-1 text-sm text-slate-400">Convert plaintext into SHA-256 / MD5 digests for integrity verification.</p>
     </div>
-<br>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form><br><br>
 
-  {% if hashed_text and hash_type %}
-  <div class="row alert alert-success">
-    <div class="col">
-  <p class="convert-text">
-    Hashed Text: {{ hashed_text }}
-  </p>
+    <form action="/cipher_conversion" method="post" class="space-y-5">
+      <div>
+        <label for="text" class="mb-1.5 block text-sm font-medium text-slate-300">String to be hashed</label>
+        <input type="text" id="text" name="text" required
+          class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30" />
+      </div>
+      <div>
+        <label for="hash_choice" class="mb-1.5 block text-sm font-medium text-slate-300">Hashing algorithm</label>
+        <select id="hash_choice" name="hash_choice"
+          class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30">
+          <option value="1">SHA256</option>
+          <option value="2">MD5</option>
+        </select>
+      </div>
+      <button type="submit" class="w-full rounded-xl bg-emerald-500 py-2.5 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-400">Convert</button>
+    </form>
+
+    {% if hashed_text and hash_type %}
+    <div class="mt-6 flex items-start justify-between gap-3 rounded-xl border border-emerald-500/40 bg-emerald-950/70 px-4 py-3">
+      <p class="convert-text break-all font-mono text-xs text-emerald-200">{{ hashed_text }}</p>
+      <button onclick="copyText()" class="shrink-0 rounded-lg border border-emerald-500/50 px-3 py-1.5 text-xs font-semibold text-emerald-300 transition hover:bg-emerald-500/10">Copy</button>
+    </div>
+    <p class="copied-alert mt-2 hidden text-sm font-semibold text-emerald-300">Copied!</p>
+    {% endif %}
   </div>
-  <div class="col offset-md-5"><button
-      class="copy-button btn btn-success align-end"
-      onclick="copyText()"
-    >
-  
-      Copy
-    </button>
- </div>
 </div>
-  <div class="copied-alert text-danger h5" id="copiedAlert">copied!</div>
-
-  {% endif %}
-
 
 <script>
   function copyText() {
@@ -59,13 +44,11 @@ Secure{% endblock %}
     textarea.select();
     document.execCommand("copy");
     document.body.removeChild(textarea);
-
-    const copiedAlert = document.getElementById("copiedAlert");
-    copiedAlert.style.display = "block";
-
-    setTimeout(function () {
-      copiedAlert.style.display = "none";
-    }, 2000);
+    const alert = document.getElementById("copiedAlert");
+    if (alert) {
+      alert.classList.remove("hidden");
+      setTimeout(() => alert.classList.add("hidden"), 2000);
+    }
   }
 </script>
 {% endblock %}

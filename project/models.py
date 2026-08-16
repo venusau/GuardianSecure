@@ -53,3 +53,21 @@ class Scan(db.Model):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "finished_at": self.finished_at.isoformat() if self.finished_at else None,
         }
+
+    def to_summary_dict(self):
+        """Lightweight row for the history listing (no full findings)."""
+        result = self.result_json or {}
+        summary = result.get("summary") or {}
+        return {
+            "scan_id": self.id,
+            "target": self.target,
+            "scan_type": self.scan_type,
+            "status": self.status,
+            "summary": summary,
+            "duration_seconds": result.get("duration_seconds"),
+            "crawled_urls": len(result.get("crawled_urls") or []),
+            "findings": len(result.get("findings") or []),
+            "error": result.get("error"),
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "finished_at": self.finished_at.isoformat() if self.finished_at else None,
+        }

@@ -57,16 +57,16 @@ run-notifier:  ## Run the Kafka->Email notification worker
 shell:  ## Open a Flask shell with app context
 	FLASK_APP=app.py $(PYTHON) -m flask shell
 
-docker-build:  ## Build all service images
+build:  ## Build all service images
 	$(COMPOSE) build
 
-docker-up:  ## Start the full stack (gateway, postgres, redis, kafka, temporal, workers)
+up:  ## Start the full stack (gateway, postgres, redis, kafka, temporal, workers)
 	$(COMPOSE) up -d
 
-docker-down:  ## Stop the full stack
+down:  ## Stop the full stack
 	$(COMPOSE) down
 
-docker-logs:  ## Tail logs from all services
+logs:  ## Tail logs from all services
 	$(COMPOSE) logs -f
 
 temporal-start:  ## Start a local Temporal dev server (requires temporal CLI)

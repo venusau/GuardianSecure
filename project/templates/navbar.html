@@ -1,44 +1,66 @@
-<nav class="navbar navbar-expand-lg gs-navbar sticky-top">
-  <div class="container-fluid px-3">
-    <a class="navbar-brand d-flex align-items-center gap-2" href="/">
-      <svg class="gs-logo" viewBox="0 0 120 120" aria-hidden="true">
-        <circle cx="60" cy="60" r="50" fill="#121826" stroke="#00e0a4" stroke-width="3"/>
+<nav class="sticky top-0 z-50 border-b border-slate-800/70 bg-slate-950/80 backdrop-blur-xl">
+  <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+    <a href="/" class="flex items-center gap-2.5">
+      <svg class="h-9 w-9 shrink-0" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="50" fill="#0f172a" stroke="#00e0a4" stroke-width="3"/>
         <path d="M60,22 L34,40 V66 C34,86 60,98 60,98 C60,98 86,86 86,66 V40 Z" fill="#00e0a4" opacity="0.9"/>
-        <path d="M48,62 l9,9 l16,-20" stroke="#0b0f17" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M48,62 l9,9 l16,-20" stroke="#020617" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span class="gs-brand">GuardianSecure</span>
+      <span class="text-lg font-extrabold tracking-tight text-white">Guardian<span class="text-brand">Secure</span></span>
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#gsNav" aria-controls="gsNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+
+    <button id="navToggle" class="rounded-lg border border-slate-700 p-2 text-slate-300 transition hover:text-white md:hidden" aria-label="Toggle navigation" aria-expanded="false">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
-    <div class="collapse navbar-collapse" id="gsNav">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+
+    <div class="hidden md:block">
+      <div class="flex items-center gap-1">
+        <a href="/" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800/60 hover:text-white">Home</a>
         {% if current_user.is_authenticated %}
-        <li class="nav-item"><a class="nav-link" href="/profile">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="/vulnerability_matcher">Scanner</a></li>
+        <a href="/profile" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800/60 hover:text-white">Dashboard</a>
+        <a href="/vulnerability_matcher" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800/60 hover:text-white">Scanner</a>
         {% endif %}
-      </ul>
-      <ul class="navbar-nav mb-2 mb-lg-0">
-        {% if current_user.is_authenticated %}
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="badge rounded-pill text-bg-secondary">{{ current_user.name }}</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end gs-card" style="background:var(--gs-surface)">
-            <li><a class="dropdown-item text-light" href="/profile">Dashboard</a></li>
-            {% if current_user.role == 'admin' %}
-            <li><a class="dropdown-item text-light" href="/admin">Admin</a></li>
-            {% endif %}
-            <li><hr class="dropdown-divider border-secondary" /></li>
-            <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">Logout</a></li>
-          </ul>
-        </li>
-        {% else %}
-        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-        <li class="nav-item"><a class="btn btn-gs btn-sm ms-2" href="/signup">Get Started</a></li>
-        {% endif %}
-      </ul>
+      </div>
+    </div>
+
+    <div class="hidden items-center gap-2 md:flex">
+      {% if current_user.is_authenticated %}
+      <a href="/profile" class="flex items-center gap-2 rounded-lg border border-slate-700 px-3 py-1.5 text-sm font-medium text-slate-200 transition hover:border-brand/60 hover:text-brand">
+        <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/20 font-mono text-xs text-emerald-300">{{ (current_user.name or 'U')[0]|upper }}</span>
+        {{ current_user.name }}
+      </a>
+      {% if current_user.role == 'admin' %}
+      <a href="/admin" class="rounded-lg border border-slate-700 px-3 py-1.5 text-sm font-medium text-amber-300 transition hover:border-amber-400/60">Admin</a>
+      {% endif %}
+      <a href="{{ url_for('auth.logout') }}" class="rounded-lg px-3 py-1.5 text-sm font-medium text-rose-400 transition hover:bg-rose-500/10">Log out</a>
+      {% else %}
+      <a href="/login" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:text-white">Sign in</a>
+      <a href="/signup" class="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-400">Get Started</a>
+      {% endif %}
     </div>
   </div>
+
+  <div id="navMobile" class="hidden border-t border-slate-800/70 px-4 pb-4 pt-2 md:hidden">
+    <a href="/" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800/60 hover:text-white">Home</a>
+    {% if current_user.is_authenticated %}
+    <a href="/profile" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800/60 hover:text-white">Dashboard</a>
+    <a href="/vulnerability_matcher" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800/60 hover:text-white">Scanner</a>
+    <a href="{{ url_for('auth.logout') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-rose-400">Log out</a>
+    {% else %}
+    <a href="/login" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800/60">Sign in</a>
+    <a href="/signup" class="mt-1 block rounded-lg bg-emerald-500 px-3 py-2 text-center text-sm font-semibold text-slate-950">Get Started</a>
+    {% endif %}
+  </div>
 </nav>
+<script>
+  (function () {
+    const toggle = document.getElementById("navToggle");
+    const menu = document.getElementById("navMobile");
+    if (toggle && menu) {
+      toggle.addEventListener("click", () => {
+        const hidden = menu.classList.toggle("hidden");
+        toggle.setAttribute("aria-expanded", String(!hidden));
+      });
+    }
+  })();
+</script>

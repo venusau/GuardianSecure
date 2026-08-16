@@ -1,59 +1,59 @@
 {% extends "base.html" %}
 {% block title %}Dashboard — GuardianSecure{% endblock %}
-
-{% block head %}
-{{ super() }}
-{% endblock %}
-
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+<div class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+  <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <div>
-      <h2 class="fw-bold mb-0">Hello, {{ username }}</h2>
-      <span class="text-muted">{{ email }}</span>
+      <h1 class="text-2xl font-bold text-white sm:text-3xl">Hello, {{ username }} 👋</h1>
+      <p class="mt-1 font-mono text-sm text-slate-500">{{ email }}</p>
     </div>
-    <a href="/vulnerability_matcher" class="btn btn-gs">+ New Scan</a>
+    <a href="/vulnerability_matcher" class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-400">
+      <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+      New Scan
+    </a>
   </div>
 
-  <div class="row g-3 mb-4">
-    <div class="col-6 col-lg-3">
-      <div class="gs-stat"><div class="num">4</div><div class="lbl">Security Tools</div></div>
+  <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p class="text-3xl font-extrabold text-white">4</p>
+      <p class="mt-1 text-sm text-slate-500">Security Tools</p>
     </div>
-    <div class="col-6 col-lg-3">
-      <div class="gs-stat"><div class="num" id="stat-scans">—</div><div class="lbl">Scans Run</div></div>
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p class="text-3xl font-extrabold text-white" id="stat-scans">—</p>
+      <p class="mt-1 text-sm text-slate-500">Scans Run</p>
     </div>
-    <div class="col-6 col-lg-3">
-      <div class="gs-stat"><div class="num text-success">100%</div><div class="lbl">In-house Engine</div></div>
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p class="text-3xl font-extrabold text-emerald-400">100%</p>
+      <p class="mt-1 text-sm text-slate-500">In-house Engine</p>
     </div>
-    <div class="col-6 col-lg-3">
-      <div class="gs-stat"><div class="num">10</div><div class="lbl">OWASP Categories</div></div>
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p class="text-3xl font-extrabold text-white">10</p>
+      <p class="mt-1 text-sm text-slate-500">OWASP Categories</p>
     </div>
   </div>
 
-  <h4 class="mb-3">Security Toolkit</h4>
-  <div class="gs-tool-grid">
-    <a class="gs-tool-card" href="/password_strength">
-      <div class="gs-tool-icon">🔐</div>
-      <h3>Password Strength</h3>
-      <p class="text-muted small mb-0">Test and harden your passwords.</p>
+  <h2 class="mb-5 mt-12 text-lg font-semibold text-white">Security Toolkit</h2>
+  <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <a href="/password_strength" class="group rounded-2xl border border-slate-800 bg-slate-900/60 p-6 transition hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/10">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-2xl">🔐</div>
+      <h3 class="font-semibold text-white group-hover:text-emerald-300">Password Strength</h3>
+      <p class="mt-2 text-sm text-slate-400">Test and harden your passwords.</p>
     </a>
-    <a class="gs-tool-card" href="/cipher_conversion">
-      <div class="gs-tool-icon">#️⃣</div>
-      <h3>Cipher Conversion</h3>
-      <p class="text-muted small mb-0">SHA-256 / MD5 digests.</p>
+    <a href="/cipher_conversion" class="group rounded-2xl border border-slate-800 bg-slate-900/60 p-6 transition hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/10">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-2xl">#️⃣</div>
+      <h3 class="font-semibold text-white group-hover:text-emerald-300">Cipher Conversion</h3>
+      <p class="mt-2 text-sm text-slate-400">SHA-256 / MD5 digests.</p>
     </a>
-    <a class="gs-tool-card" href="/vulnerability_matcher">
-      <div class="gs-tool-icon">🛡️</div>
-      <h3>Vulnerability Scanner</h3>
-      <p class="text-muted small mb-0">Run an OWASP Top-10 scan.</p>
+    <a href="/vulnerability_matcher" class="group rounded-2xl border border-slate-800 bg-slate-900/60 p-6 transition hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/10">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-2xl">🛡️</div>
+      <h3 class="font-semibold text-white group-hover:text-emerald-300">Vulnerability Scanner</h3>
+      <p class="mt-2 text-sm text-slate-400">Run an OWASP Top-10 scan.</p>
     </a>
-    <a class="gs-tool-card" href="{{ url_for('tools.ai_chatbot') }}">
-      <div class="gs-tool-icon">🤖</div>
-      <h3>AI Assistant <span class="badge text-bg-secondary">soon</span></h3>
-      <p class="text-muted small mb-0">Security Q&amp;A assistant.</p>
+    <a href="{{ url_for('tools.ai_chatbot') }}" class="group rounded-2xl border border-slate-800 bg-slate-900/60 p-6 transition hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/10">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-2xl">🤖</div>
+      <h3 class="font-semibold text-white group-hover:text-emerald-300">AI Assistant <span class="rounded-full border border-slate-700 px-2 py-0.5 text-[10px] font-semibold uppercase text-slate-400">Soon</span></h3>
+      <p class="mt-2 text-sm text-slate-400">Security Q&amp;A assistant.</p>
     </a>
   </div>
 </div>
-
-{% block footer %}{% endblock %}
 {% endblock %}
